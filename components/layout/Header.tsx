@@ -330,7 +330,7 @@ export default function Header() {
       >
         <div className="w-full px-4 lg:px-8 2xl:px-10">
           <div
-            className="flex h-12 items-center justify-between lg:h-[52px] lg:grid lg:grid-cols-[minmax(220px,1fr)_auto_minmax(220px,1fr)] lg:gap-10"
+            className="flex h-14 items-center justify-between lg:h-16 lg:grid lg:grid-cols-[minmax(220px,1fr)_auto_minmax(220px,1fr)] lg:gap-10"
           >
             {/* Refined horizontal wordmark based on the owner's shirt reference. It
                 is inverted on light sections so one transparent asset works
@@ -350,7 +350,7 @@ export default function Header() {
                 height={335}
                 priority
                 unoptimized
-                className="h-auto w-[132px] sm:w-[140px] lg:w-[145px]"
+                className="block h-auto w-[144px] shrink-0 sm:w-[156px] lg:w-[164px]"
                 style={{
                   filter: lightInk ? "invert(1)" : "none",
                   transition: "filter 520ms cubic-bezier(0.22,1,0.36,1)",
