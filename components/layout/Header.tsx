@@ -332,9 +332,9 @@ export default function Header() {
           <div
             className="flex h-12 items-center justify-between lg:h-[52px] lg:grid lg:grid-cols-[minmax(220px,1fr)_auto_minmax(220px,1fr)] lg:gap-10"
           >
-            {/* Digitally cleaned trace of the owner's shirt wordmark. Its
-                transparent silhouette stays crisp at navigation size and is
-                inverted on light sections so one asset works everywhere. */}
+            {/* Clean digital wordmark based on the owner's shirt reference. It
+                is inverted on light sections so one transparent asset works
+                on every surface. */}
             <Link
               href="/"
               aria-label="828CONSTRUCTION"
@@ -344,7 +344,7 @@ export default function Header() {
               }}
             >
               <Image
-                src="/images/logo/828construction-reference-clean-v4-white.png"
+                src="/images/logo/828construction-reference-clean-v3-white.png"
                 alt=""
                 width={4980}
                 height={800}
