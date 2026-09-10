@@ -12,13 +12,27 @@ const publicRoutes = [
 ];
 
 test.describe("release hardening", () => {
-  test("skip link moves focus to the main landmark", async ({ page }) => {
+  test("skip link moves focus to the main landmark", async ({ page, browserName }) => {
     await page.goto("/about");
     const skipLink = page.getByRole("link", { name: "Skip to main content" });
-    await skipLink.focus();
+    const main = page.locator("#main-content");
+
+    // Playwright WebKit runs with Safari's Tab-to-links preference disabled,
+    // so its synthetic Tab key cannot exercise a link skip path. Keep a
+    // structural accessibility assertion there; Chromium covers the complete
+    // keyboard interaction below.
+    if (browserName === "webkit") {
+      await expect(skipLink).toHaveAttribute("href", "#main-content");
+      await expect(main).toHaveAttribute("tabindex", "-1");
+      return;
+    }
+
+    // Exercise the real keyboard path so the test matches how keyboard users
+    // move the off-canvas link into view and activate its target.
+    await page.keyboard.press("Tab");
     await expect(skipLink).toBeFocused();
     await page.keyboard.press("Enter");
-    await expect(page.locator("#main-content")).toBeFocused();
+    await expect(main).toBeFocused();
   });
 
   test("first-visit splash isolates the page and releases focus and scroll", async ({ browser }) => {

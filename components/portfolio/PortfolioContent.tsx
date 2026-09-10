@@ -455,7 +455,7 @@ export default function PortfolioContent() {
                     Portfolio / Selected project work
                   </span>
                   <h1 className="mt-5 max-w-xl font-editorial text-[clamp(2.75rem,5.2vw,5.4rem)] leading-[0.9]">
-                    Remodels, ADUs, repairs.
+                    Remodels, ADUs, Repairs.
                   </h1>
                   <p className="mt-6 max-w-md text-sm leading-7 text-white/56">
                     Three projects, photographed the way they were built — completely.

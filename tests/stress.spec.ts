@@ -147,25 +147,42 @@ test.describe("Contact form stress", () => {
   });
 
   test("rapid double-submit is debounced — only one request fires", async ({ page }) => {
+    await page.route("**/api/contact/challenge", async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify({ token: "stress-challenge", minWaitMs: 0 }),
+      });
+    });
+    await page.route("**/api/contact", async (route) => {
+      if (route.request().method() !== "POST") return route.continue();
+      await route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify({ ok: true, reference: "828-STRESS" }),
+      });
+    });
     await page.goto(`${BASE}/contact`);
     await page.waitForLoadState("networkidle");
     await scrollContactFormIntoView(page);
 
     const nameInput = page.locator("#cf-name");
     const phoneInput = page.locator("#cf-phone");
-    const serviceSelect = page.locator("#cf-service");
+    const serviceChoice = page.getByRole("radio", { name: /ADU Build or convert space/i });
     const messageInput = page.locator("#cf-message");
 
     if ((await nameInput.count()) > 0) {
       await nameInput.fill("Test User");
       await phoneInput.fill("(310) 555-0000");
-      await serviceSelect.selectOption("ADU Construction");
+      await serviceChoice.check();
       await messageInput.fill("This is a test message with enough characters to pass validation.");
 
       // Count network requests to /api/contact
       const requests: string[] = [];
       page.on("request", (req) => {
-        if (req.url().includes("/api/contact")) requests.push(req.url());
+        if (req.method() === "POST" && new URL(req.url()).pathname === "/api/contact") {
+          requests.push(req.url());
+        }
       });
 
       const submitBtn = page.locator("button[type='submit']");
@@ -250,20 +267,32 @@ test.describe("Viewport resize stress", () => {
     await page.evaluate(() => window.scrollTo({ top: document.body.scrollHeight * 0.3, behavior: "instant" }));
     await page.waitForTimeout(300);
 
-    // Resize to mobile
-    await page.setViewportSize({ width: 320, height: 568 });
-    await page.waitForTimeout(500);
-
-    // Check no horizontal overflow
-    const hasOverflow = await page.evaluate(() => document.body.scrollWidth > document.body.clientWidth);
-    expect(hasOverflow, "Horizontal overflow after resize to 320px").toBe(false);
-
-    // Resize to tablet
-    await page.setViewportSize({ width: 768, height: 1024 });
-    await page.waitForTimeout(300);
-
-    const hasOverflowTablet = await page.evaluate(() => document.body.scrollWidth > document.body.clientWidth);
-    expect(hasOverflowTablet, "Horizontal overflow at 768px").toBe(false);
+    // Sweep through phone, intermediate, and tablet widths without reloading.
+    // This catches stale breakpoint transforms that only appear while dragging
+    // a browser or rotating a device.
+    for (const viewport of [
+      { width: 320, height: 568 },
+      { width: 360, height: 800 },
+      { width: 375, height: 812 },
+      { width: 390, height: 844 },
+      { width: 414, height: 896 },
+      { width: 430, height: 932 },
+      { width: 600, height: 960 },
+      { width: 768, height: 1024 },
+      { width: 820, height: 1180 },
+      { width: 1024, height: 768 },
+      { width: 1280, height: 800 },
+      { width: 1728, height: 1117 },
+    ]) {
+      await page.setViewportSize(viewport);
+      await page.waitForTimeout(360);
+      const state = await page.evaluate(() => ({
+        bodyOverflow: document.body.scrollWidth - document.body.clientWidth,
+        rootOverflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+      }));
+      expect(state.bodyOverflow, `Body overflow at ${viewport.width}px`).toBeLessThanOrEqual(1);
+      expect(state.rootOverflow, `Root overflow at ${viewport.width}px`).toBeLessThanOrEqual(1);
+    }
 
     // Resize back to desktop
     await page.setViewportSize({ width: 1440, height: 900 });
@@ -287,16 +316,20 @@ test.describe("Keyboard navigation", () => {
     // Should be skip link or first nav item
     expect(firstFocused).toBeTruthy();
 
-    // Form fields should all be reachable
-    const formInputs = await page.locator("#cf-name, #cf-phone, #cf-email, #cf-service, #cf-message").count();
-    expect(formInputs).toBe(5);
-
-    // Each field should be focusable
-    for (const id of ["#cf-name", "#cf-phone", "#cf-email", "#cf-service", "#cf-message"]) {
-      await page.locator(id).scrollIntoViewIfNeeded();
-      await page.locator(id).focus();
-      const isFocused = await page.locator(id).evaluate((el) => el === document.activeElement);
-      expect(isFocused, `Field ${id} should be focusable`).toBe(true);
+    // Each logical form control, including the radio-card service selector,
+    // should be present and keyboard-focusable.
+    const controls = [
+      page.locator("#cf-name"),
+      page.locator("#cf-phone"),
+      page.locator("#cf-email"),
+      page.getByRole("radio", { name: /ADU Build or convert space/i }),
+      page.locator("#cf-message"),
+    ];
+    for (const control of controls) {
+      await expect(control).toHaveCount(1);
+      await control.scrollIntoViewIfNeeded();
+      await control.focus();
+      await expect(control).toBeFocused();
     }
   });
 

@@ -131,7 +131,7 @@ export default function AboutPreview() {
             >
               <span className="-my-[0.24em] block overflow-hidden py-[0.24em]">
                 <span className="about-headline-line block">
-                  Refining industry standards.
+                  Quality over quantity.
                 </span>
               </span>
             </h2>

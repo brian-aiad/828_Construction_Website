@@ -133,10 +133,10 @@ export default function Footer() {
           </nav>
 
           <div className="mt-8 min-[1180px]:mt-14">
-            <p className="font-labels text-[10px] uppercase leading-[1.25] tracking-[0.18em] text-black/54">
+            <p className="font-labels text-[10px] uppercase leading-[1.25] tracking-[0.18em] text-black/58">
               &copy; {year} 828 Construction
             </p>
-            <p className="mt-2 max-w-sm text-[13px] leading-[1.25] text-black/54">
+            <p className="mt-2 max-w-sm text-[13px] leading-[1.25] text-black/58">
               All rights reserved.
             </p>
           </div>
@@ -145,7 +145,7 @@ export default function Footer() {
         <div data-motion-reveal="right" data-motion-delay="0.12" className="relative z-20 flex h-full min-h-0 flex-col overflow-hidden border-t border-black/8 bg-white px-6 pb-10 pt-9 text-[#141414] md:px-9 md:py-10 min-[1180px]:justify-start min-[1180px]:border-l min-[1180px]:border-t-0 min-[1180px]:px-[clamp(3rem,4.4vw,5.4rem)] min-[1180px]:pb-[clamp(8rem,13vh,10rem)] min-[1180px]:pt-[clamp(1.75rem,4vh,3.25rem)]">
           <div className="relative z-40 grid gap-7 md:grid-cols-2 min-[1180px]:block">
           <div>
-            <p className={`${labelClass} text-black/52`}>Serving</p>
+            <p className={`${labelClass} text-black/58`}>Serving</p>
             <h3 className="mt-5 font-display text-[clamp(1.6rem,5.5vw,2.2rem)] font-medium leading-tight tracking-[0] text-[#141414] min-[1180px]:mt-3 min-[1180px]:text-[clamp(1.45rem,1.45vw,1.85rem)]">
               Torrance, CA
             </h3>
@@ -157,7 +157,7 @@ export default function Footer() {
           </div>
 
           <div className="min-[1180px]:mt-6">
-            <p className={`${labelClass} text-black/52`}>Service Area</p>
+            <p className={`${labelClass} text-black/58`}>Service Area</p>
             <p className="mt-5 max-w-md text-[15px] leading-[1.5] text-black/72 min-[1180px]:mt-3 min-[1180px]:text-[13px] min-[1180px]:leading-[1.35]">
               {SITE.serviceArea.join(" / ")}
             </p>
@@ -168,6 +168,18 @@ export default function Footer() {
             <p className="inline-flex bg-white/92 border border-[var(--color-accent)]/55 px-5 py-3 font-labels text-[10px] uppercase tracking-[0.17em] text-black/68">
               CA License #{SITE.license}
             </p>
+          </div>
+
+          <div
+            aria-hidden="true"
+            className="relative z-10 -mx-6 mt-8 overflow-hidden md:-mx-9 min-[1180px]:hidden"
+          >
+            <BrandMarqueeBottom
+              giant
+              color="rgb(12, 12, 12)"
+              fontSize="clamp(2.25rem, 11vw, 3.75rem)"
+              itemClassName="text-[#0c0c0c]"
+            />
           </div>
 
           <div

@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
@@ -327,11 +328,13 @@ export default function Header() {
         }}
         className="fixed top-0 left-0 right-0 z-[80] transition-[background-color,border-color] duration-[720ms] ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:duration-0"
       >
-        <div className="w-full px-3 sm:px-4 lg:px-8 2xl:px-10">
+        <div className="w-full px-4 lg:px-8 2xl:px-10">
           <div
             className="flex h-12 items-center justify-between lg:h-[52px] lg:grid lg:grid-cols-[minmax(220px,1fr)_auto_minmax(220px,1fr)] lg:gap-10"
           >
-            {/* Logo — text wordmark, uniform weight */}
+            {/* Clean digital wordmark based on the owner's shirt reference. It
+                is inverted on light sections so one transparent asset works
+                on every surface. */}
             <Link
               href="/"
               aria-label="828CONSTRUCTION"
@@ -340,13 +343,18 @@ export default function Header() {
                 if (pathname === "/") window.scrollTo(0, 0);
               }}
             >
-              <span
-                className={`font-display font-semibold text-[15px] min-[390px]:text-base sm:text-[17px] lg:text-[18px] tracking-[0.085em] min-[390px]:tracking-[0.095em] lg:tracking-[0.105em] whitespace-nowrap transition-colors duration-[520ms] ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:duration-0 ${
-                  lightInk ? "text-[#111]" : "text-white"
-                }`}
-              >
-                828CONSTRUCTION
-              </span>
+              <Image
+                src="/images/logo/828construction-reference-clean-v3-white.png"
+                alt=""
+                width={4980}
+                height={800}
+                priority
+                className="h-[25px] w-auto min-[390px]:h-[26px] sm:h-7 lg:h-[29px]"
+                style={{
+                  filter: lightInk ? "invert(1)" : "none",
+                  transition: "filter 520ms cubic-bezier(0.22,1,0.36,1)",
+                }}
+              />
             </Link>
 
             {/* Desktop nav */}

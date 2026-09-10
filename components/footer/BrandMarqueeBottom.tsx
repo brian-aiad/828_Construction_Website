@@ -43,7 +43,7 @@ export default function BrandMarqueeBottom({
   return (
     <div
       aria-hidden="true"
-      className={`brand-marquee-bottom relative w-full overflow-hidden motion-reduce:hidden ${heightClass} ${className}`}
+      className={`brand-marquee-bottom relative w-full overflow-hidden ${heightClass} ${className}`}
     >
       <div
         className="animate-brand-marquee absolute left-0 top-0 flex h-full w-max items-center whitespace-nowrap will-change-transform"

@@ -18,11 +18,22 @@ export type ChallengeVerification =
   | { ok: false; code: ChallengeFailureCode; retryAfterMs?: number };
 
 function challengeSecret() {
-  return (
+  const configuredSecret =
     process.env.CONTACT_FORM_SECRET?.trim() ||
     process.env.RESEND_API_KEY?.trim() ||
-    ""
-  );
+    "";
+
+  if (configuredSecret) return configuredSecret;
+
+  // Keep local browser QA usable without weakening the deployment contract.
+  // Production still fails closed until CONTACT_FORM_SECRET (or the Resend
+  // key fallback) is configured, while `next dev` can issue and verify the
+  // same signed, expiring challenges without logging a 503 on every visit.
+  if (process.env.NODE_ENV !== "production") {
+    return "828-construction-local-development-challenge-secret";
+  }
+
+  return "";
 }
 
 function signatureFor(payload: string, secret: string) {

@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 export default function NotFound() {
   return (
     <section
-      className="min-h-screen bg-black flex items-center justify-center px-6"
+      className="min-h-svh bg-black flex items-center justify-center px-6"
       aria-labelledby="not-found-title"
     >
       <div className="text-center max-w-xl">

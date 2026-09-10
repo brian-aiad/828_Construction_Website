@@ -466,7 +466,7 @@ function ServicesIndex() {
                     }}
                   >
                     <div className="min-h-0 overflow-hidden">
-                      <div className="relative -mt-2 mb-6 h-[42vh] overflow-hidden lg:mb-4 lg:h-[calc(100svh-36.25rem)] lg:min-h-[12rem]">
+                      <div className="relative -mt-2 mb-6 h-[42svh] overflow-hidden lg:mb-4 lg:h-[calc(100svh-36.25rem)] lg:min-h-[12rem]">
                         <Image
                           src={row.image}
                           alt={`${service.title} by 828 Construction`}

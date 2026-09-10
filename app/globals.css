@@ -105,6 +105,24 @@ body {
   overscroll-behavior-x: none;
 }
 
+/* The About hero brand line is a fixed title, not a marquee. Keep the lock
+   specific so the deliberate service-area and footer marquees remain intact. */
+.about-hero-static-title,
+.about-hero-static-title > span {
+  animation: none !important;
+  transform: none !important;
+}
+
+.about-hero-static-title {
+  letter-spacing: 0.02em;
+}
+
+@media (min-width: 640px) {
+  .about-hero-static-title {
+    letter-spacing: 0.035em;
+  }
+}
+
 .contact-path-desktop-stage {
   display: none;
 }

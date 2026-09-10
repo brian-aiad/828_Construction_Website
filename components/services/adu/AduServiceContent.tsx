@@ -458,8 +458,8 @@ function AduHero() {
           .adu-fade { animation: none !important; opacity: 1 !important; transform: none !important; }
         }
       `}</style>
-      <div className="grid min-h-screen grid-cols-1 lg:grid-cols-[minmax(0,0.55fr)_minmax(0,0.45fr)]">
-        <div className="relative order-2 min-h-[46vh] overflow-hidden lg:order-1 lg:min-h-screen">
+      <div className="grid min-h-svh grid-cols-1 lg:grid-cols-[minmax(0,0.55fr)_minmax(0,0.45fr)]">
+        <div className="relative order-2 min-h-[46svh] overflow-hidden lg:order-1 lg:min-h-svh">
           <div className="adu-parallax absolute inset-x-0" style={{ top: "-7.5%", height: "115%" }}>
             <Image
               src="/images/generated/adu-hero-exterior-v4.webp"

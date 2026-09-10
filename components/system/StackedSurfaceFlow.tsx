@@ -127,7 +127,11 @@ export default function StackedSurfaceFlow({
         const staticSurface =
           el.hasAttribute("data-stack-static") ||
           el.querySelector("[data-stack-static]") !== null;
-        if (motionMode === "none" || staticSurface) {
+        // Touch/tablet pages must stay in natural document flow. Inline sticky
+        // positioning here used to override the tablet CSS contract, leaving
+        // multiple image-heavy surfaces composited on top of one another and
+        // causing visible flashes during quick scrolls.
+        if (motionMode !== "desktop" || staticSurface) {
           el.style.position = "relative";
           el.style.top = "auto";
           return;
@@ -188,32 +192,17 @@ export default function StackedSurfaceFlow({
     let railFrame = 0;
     let lastScrollAt = 0;
     const updateTouchCovers = () => {
-      const veilUpdates = stacks.map((surface, index) => {
+      const veilUpdates = stacks.map((surface) => {
         const veil = surface.querySelector<HTMLElement>("[data-cover-veil]");
         if (!veil) return null;
 
-        if (motionMode === "none") {
+        // Cover veils belong to the desktop stacking illusion. Painting them
+        // over natural-flow touch surfaces makes photos pulse darker as the
+        // next section approaches, which reads as image flicker on tablets.
+        if (motionMode !== "desktop") {
           return { veil, opacity: "0" };
         }
-        if (motionMode === "desktop") return null;
-
-        const next =
-          stacks[index + 1] ??
-          document.querySelector<HTMLElement>("[data-footer-surface]");
-        if (!next) {
-          return { veil, opacity: "0" };
-        }
-
-        const nextTop = next.getBoundingClientRect().top;
-        const start = window.innerHeight * 0.94;
-        const end = 48;
-        const progress = Math.min(
-          1,
-          Math.max(0, (start - nextTop) / Math.max(1, start - end))
-        );
-        const light = surface.hasAttribute("data-header-light");
-        const maxOpacity = light ? lightVeilOpacity : darkVeilOpacity * 0.78;
-        return { veil, opacity: (progress * maxOpacity).toFixed(4) };
+        return null;
       });
 
       veilUpdates.forEach((update) => {

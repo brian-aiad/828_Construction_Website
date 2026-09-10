@@ -7,6 +7,7 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import SplitType from "split-type";
 import { PROCESS_STEPS_V2, SITE } from "@/lib/constants";
+import { lqip } from "@/lib/image-placeholders";
 import { AnimationController } from "@/utils/animationControl";
 import { revealOnVisible } from "@/utils/revealOnVisible";
 
@@ -351,6 +352,8 @@ export default function HomeVisionSequence({
               alt=""
               fill
               loading="lazy"
+              placeholder="blur"
+              blurDataURL={lqip("/images/generated/home-vision-fireplace-work-v2.webp")}
               sizes="100vw"
               className="object-cover"
               style={{ filter: "contrast(1.04) saturate(1.04)" }}
@@ -381,7 +384,7 @@ export default function HomeVisionSequence({
             >
               <span className="-my-[0.24em] block overflow-hidden py-[0.24em]">
                 <span className="vision-headline-line block">
-                  Refining industry standards.
+                  Quality over quantity.
                 </span>
               </span>
             </h3>
@@ -521,6 +524,8 @@ export default function HomeVisionSequence({
                             src={processImages[i] ?? "/images/process/detail.jpg"}
                             alt=""
                             fill
+                            placeholder="blur"
+                            blurDataURL={lqip(processImages[i] ?? "/images/process/detail.jpg")}
                             sizes="(max-width: 640px) 128px, (max-width: 1024px) 152px, 184px"
                             quality={92}
                             className="object-cover opacity-90 transition-[transform,opacity] duration-500"

@@ -357,7 +357,7 @@ function ConsultingHero() {
           .con-mobile-hero { animation: none !important; opacity: 1 !important; transform: none !important; }
         }
       `}</style>
-      <div className="grid min-h-screen grid-cols-1 lg:grid-cols-[minmax(0,0.48fr)_minmax(0,0.52fr)]">
+      <div className="grid min-h-svh grid-cols-1 lg:grid-cols-[minmax(0,0.48fr)_minmax(0,0.52fr)]">
         <div className="relative flex flex-col justify-center px-6 pb-14 pt-28 sm:px-10 lg:pl-[max(3rem,calc((100vw-96rem)/2+3rem))] lg:pr-14 lg:py-28">
           <Link
             href="/services"
@@ -409,7 +409,7 @@ function ConsultingHero() {
         </div>
 
         {/* Photograph flush to the right edge, riding under the header */}
-        <div className="relative min-h-[48vh] overflow-hidden lg:min-h-screen">
+        <div className="relative min-h-[48svh] overflow-hidden lg:min-h-svh">
           <div className="con-parallax absolute inset-x-0" style={{ top: "-7.5%", height: "115%" }}>
             <Image
               src="/images/generated/consulting-hero-advisory-table-v3.webp"

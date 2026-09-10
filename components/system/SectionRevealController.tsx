@@ -3,6 +3,10 @@
 import { useLayoutEffect } from "react";
 import { usePathname } from "next/navigation";
 import { gsap } from "gsap";
+import {
+  COARSE_TABLET_QUERY,
+  DESKTOP_MOTION_QUERY,
+} from "@/utils/animationControl";
 
 type RevealDirection = "left" | "right" | "up";
 
@@ -34,6 +38,10 @@ export default function SectionRevealController() {
   useLayoutEffect(() => {
     const roots = Array.from(document.querySelectorAll<HTMLElement>(SELECTOR));
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const desktopMotion = window.matchMedia(DESKTOP_MOTION_QUERY);
+    const coarseTouch = window.matchMedia(COARSE_TABLET_QUERY);
+    const staticEntrancesEnabled = () =>
+      !desktopMotion.matches || reducedMotion.matches || coarseTouch.matches;
     const distance = window.innerWidth < 768 ? 20 : window.innerWidth < 1280 ? 26 : 34;
     const duration = window.innerWidth < 768 ? 0.64 : window.innerWidth < 1280 ? 0.7 : 0.76;
     const units: RevealUnit[] = roots.map((trigger) => {
@@ -81,7 +89,7 @@ export default function SectionRevealController() {
     let remaining = units.length;
     const activeTweens = new Set<gsap.core.Tween>();
     const ctx = gsap.context(() => {
-      if (reducedMotion.matches) {
+      if (staticEntrancesEnabled()) {
         gsap.set(allTargets, { opacity: 1, x: 0, y: 0, clearProps: "willChange" });
         units.forEach((unit) => {
           unit.revealed = true;
@@ -111,7 +119,7 @@ export default function SectionRevealController() {
       remaining = Math.max(0, remaining - 1);
       unit.trigger.setAttribute("data-motion-revealed", "true");
 
-      if (immediate || reducedMotion.matches) {
+      if (immediate || staticEntrancesEnabled()) {
         gsap.set(unit.targets, {
           opacity: 1,
           x: 0,
@@ -243,8 +251,8 @@ export default function SectionRevealController() {
         : undefined;
       if (unit) reveal(unit, true);
     };
-    const finishForReducedMotion = () => {
-      if (!reducedMotion.matches) return;
+    const finishForStaticMotion = () => {
+      if (!staticEntrancesEnabled()) return;
       units.forEach((unit) => reveal(unit, true));
     };
 
@@ -253,7 +261,9 @@ export default function SectionRevealController() {
       window.addEventListener("resize", scheduleInspect, { passive: true });
     }
     document.addEventListener("focusin", onFocusIn);
-    reducedMotion.addEventListener("change", finishForReducedMotion);
+    desktopMotion.addEventListener("change", finishForStaticMotion);
+    reducedMotion.addEventListener("change", finishForStaticMotion);
+    coarseTouch.addEventListener("change", finishForStaticMotion);
 
     return () => {
       if (frame) cancelAnimationFrame(frame);
@@ -263,7 +273,9 @@ export default function SectionRevealController() {
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", scheduleInspect);
       document.removeEventListener("focusin", onFocusIn);
-      reducedMotion.removeEventListener("change", finishForReducedMotion);
+      desktopMotion.removeEventListener("change", finishForStaticMotion);
+      reducedMotion.removeEventListener("change", finishForStaticMotion);
+      coarseTouch.removeEventListener("change", finishForStaticMotion);
       units.forEach((unit) => unit.trigger.removeAttribute("data-motion-revealed"));
       ambientTargets.forEach((target) => target.removeAttribute("data-ambient-paused"));
       activeTweens.forEach((tween) => tween.kill());

@@ -460,7 +460,7 @@ function RemediationHero() {
           .rem-hero-line { animation: none !important; opacity: 1 !important; transform: none !important; }
         }
       `}</style>
-      <div className="grid min-h-screen grid-cols-1 lg:grid-cols-[minmax(0,0.45fr)_minmax(0,0.55fr)]">
+      <div className="grid min-h-svh grid-cols-1 lg:grid-cols-[minmax(0,0.45fr)_minmax(0,0.55fr)]">
         <div className="relative order-1 flex flex-col justify-center px-6 pb-14 pt-28 sm:px-10 lg:px-14 lg:pb-28 lg:pt-32">
           <Link
             href="/services"
@@ -511,7 +511,7 @@ function RemediationHero() {
           </div>
         </div>
 
-        <div className="rem-hero-media relative order-2 min-h-[46vh] overflow-hidden lg:min-h-screen">
+        <div className="rem-hero-media relative order-2 min-h-[46svh] overflow-hidden lg:min-h-svh">
           <div className="rem-parallax absolute inset-x-0" style={{ top: "-7.5%", height: "115%" }}>
             <Image
               src="/images/generated/remediation-hero-controlled-work-v3.webp"

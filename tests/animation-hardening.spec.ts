@@ -102,6 +102,8 @@ async function collectAnimationFailures(page: Page) {
       "p",
       "a",
       "button",
+      "label",
+      "legend",
       "[class*='headline']",
       "[class*='title']",
     ].join(",");
@@ -211,9 +213,8 @@ async function collectSmallScreenContainerFailures(page: Page) {
       failures.push(`document horizontal overflow: ${doc.scrollWidth} > ${doc.clientWidth}`);
     }
 
-    // StackedSurfaceFlow intentionally uses sticky positioning in both desktop
-    // and touch motion modes. Only legacy motion runways are forbidden from
-    // remaining pinned on narrow screens.
+    // Legacy motion runways must not remain pinned on narrow screens. The
+    // separate coarse-pointer audit below verifies stack surfaces themselves.
     document.querySelectorAll<HTMLElement>(".motion-runway, .process-travel").forEach((el) => {
       const style = window.getComputedStyle(el);
       if (style.position === "sticky" || style.position === "fixed") {
@@ -277,14 +278,23 @@ async function sectionScrollTargets(page: Page) {
 
 test.describe("animation hardening", () => {
   for (const viewport of [
-    { name: "desktop", width: 1440, height: 900 },
-    { name: "large-desktop", width: 2048, height: 1113 },
+    { name: "mobile-320", width: 320, height: 568 },
+    { name: "mobile-360", width: 360, height: 800 },
+    { name: "iphone-375", width: 375, height: 812 },
+    { name: "iphone-390", width: 390, height: 844 },
+    { name: "mobile-414", width: 414, height: 896 },
+    { name: "mobile-430", width: 430, height: 932 },
+    { name: "intermediate-600", width: 600, height: 960 },
     { name: "ipad-portrait", width: 768, height: 1024 },
+    { name: "ipad-air-portrait", width: 820, height: 1180 },
     { name: "ipad-landscape", width: 1024, height: 768 },
-    { name: "mobile", width: 390, height: 844 },
+    { name: "laptop-1280", width: 1280, height: 800 },
+    { name: "desktop-1440", width: 1440, height: 900 },
+    { name: "desktop-1728", width: 1728, height: 1117 },
+    { name: "large-desktop", width: 2048, height: 1113 },
   ]) {
     for (const route of ROUTES) {
-      const sizeTag = viewport.name === "desktop" || viewport.name === "large-desktop" ? "@desktop" : "@small-screen";
+      const sizeTag = viewport.width >= 1280 ? "@desktop" : "@small-screen";
       test(`${sizeTag} ${route} avoids clipped text and overflow at ${viewport.name}`, async ({ page }) => {
         test.setTimeout(60_000);
         await page.setViewportSize({ width: viewport.width, height: viewport.height });
@@ -295,6 +305,81 @@ test.describe("animation hardening", () => {
       });
     }
   }
+
+  test("about title stays static while the dossier remains a compact left-side sheet", async ({ page }) => {
+    test.setTimeout(60_000);
+    await skipSplash(page);
+
+    for (const viewport of [
+      { width: 390, height: 844, compact: false },
+      { width: 768, height: 1024, compact: true },
+      { width: 1024, height: 768, compact: true },
+      { width: 1440, height: 900, compact: true },
+      { width: 2048, height: 900, compact: true },
+    ]) {
+      await page.setViewportSize({ width: viewport.width, height: viewport.height });
+      await page.goto(`${BASE}/about`, { waitUntil: "domcontentloaded" });
+      await settle(page, 650);
+
+      const initial = await page.evaluate(() => {
+        const title = document.querySelector<HTMLElement>("[data-about-static-title]");
+        const dossier = document.querySelector<HTMLElement>("[data-about-dossier]");
+        if (!title || !dossier) return null;
+        const titleStyle = getComputedStyle(title);
+        const titleRect = title.getBoundingClientRect();
+        const dossierRect = dossier.getBoundingClientRect();
+        return {
+          text: title.textContent?.trim(),
+          titleLeft: titleRect.left,
+          animationName: titleStyle.animationName,
+          transform: titleStyle.transform,
+          dossierWidth: dossierRect.width,
+          dossierHeight: dossierRect.height,
+          dossierLeft: dossierRect.left,
+          dossierRight: dossierRect.right,
+          overflow: document.documentElement.scrollWidth - innerWidth,
+        };
+      });
+
+      expect(initial, `${viewport.width}px: expected About hero elements`).not.toBeNull();
+      expect(initial?.text).toBe("828 Construction");
+      expect(initial?.animationName).toBe("none");
+      expect(initial?.transform).toBe("none");
+      expect(initial?.overflow).toBeLessThanOrEqual(1);
+      if (viewport.compact) {
+        expect(
+          (initial?.dossierWidth ?? 0) / Math.max(initial?.dossierHeight ?? 1, 1),
+          `${viewport.width}px: dossier should be wider than it is tall`
+        ).toBeGreaterThan(1.35);
+        expect(
+          initial?.dossierRight ?? viewport.width,
+          `${viewport.width}px: dossier should stay anchored to the left side of the hero`
+        ).toBeLessThanOrEqual(viewport.width * 0.84);
+        expect(
+          initial?.dossierRight ?? 0,
+          `${viewport.width}px: dossier should extend slightly beyond the screen midpoint`
+        ).toBeGreaterThan(viewport.width / 2);
+      } else {
+        expect(initial?.dossierHeight ?? 0).toBeGreaterThan(initial?.dossierWidth ?? 0);
+      }
+
+      await page.evaluate(() => window.scrollTo({ top: 160, behavior: "instant" }));
+      await settle(page, 250);
+      const afterScroll = await page.evaluate(() => {
+        const title = document.querySelector<HTMLElement>("[data-about-static-title]");
+        if (!title) return null;
+        const style = getComputedStyle(title);
+        return {
+          left: title.getBoundingClientRect().left,
+          animationName: style.animationName,
+          transform: style.transform,
+        };
+      });
+      expect(afterScroll?.left).toBe(initial?.titleLeft);
+      expect(afterScroll?.animationName).toBe("none");
+      expect(afterScroll?.transform).toBe("none");
+    }
+  });
 
   test("home survives rapid scroll, resize, and history stress", async ({ page }) => {
     test.setTimeout(90_000);
@@ -353,7 +438,7 @@ test.describe("animation hardening", () => {
         const surfaces = Array.from(document.querySelectorAll<HTMLElement>("[data-stack-surface]"));
         const footer = document.querySelector<HTMLElement>("[data-footer-surface]");
         const craft = surfaces.find((surface) =>
-          (surface.textContent || "").includes("The mindset behind every build.")
+          (surface.textContent || "").includes("Exceptional thinking, exceptional building.")
         );
         const cta = surfaces.find((surface) =>
           (surface.textContent || "").includes("For those who value experience and quality.")
@@ -532,10 +617,10 @@ test.describe("animation hardening", () => {
   test("updated 828 favicon assets are linked and available", async ({ page, request }) => {
     await page.goto(`${BASE}/`, { waitUntil: "domcontentloaded" });
     const href = await page
-      .locator('link[rel="icon"][sizes="32x32"]')
+      .locator('link[rel="icon"][sizes="32x32"][type="image/png"]')
       .getAttribute("href");
 
-    expect(href).toContain("/favicon-32x32.png?v=20260824");
+    expect(href).toContain("/favicon-828-v2-32x32.png?v=20260907");
     const response = await request.get(new URL(href!, BASE).toString());
     expect(response.ok()).toBe(true);
     expect(response.headers()["content-type"]).toContain("image/png");
@@ -590,8 +675,64 @@ test.describe("animation hardening", () => {
         result.footerHeight,
         `${viewport.name}: footer height ${result.footerHeight}px is too long for ${viewport.height}px viewport`
       ).toBeLessThanOrEqual(viewport.height * viewport.maxHeightRatio);
-      expect(result.marqueeVisible, `${viewport.name}: decorative footer marquee should be hidden`).toBe(false);
+      expect(result.marqueeVisible, `${viewport.name}: footer marquee should be visible`).toBe(true);
     }
+  });
+
+  test("coarse-pointer tablet keeps stacked photos in stable natural flow", async ({ browser }) => {
+    test.setTimeout(90_000);
+    const context = await browser.newContext({
+      hasTouch: true,
+      isMobile: false,
+      viewport: { width: 1024, height: 768 },
+    });
+    const page = await context.newPage();
+    await skipSplash(page);
+    await page.goto(`${BASE}/`, { waitUntil: "domcontentloaded" });
+    await settle(page, 1000);
+
+    const initial = await page.evaluate(() => ({
+      coarse: window.matchMedia("(pointer: coarse) and (max-width: 1366px)").matches,
+      modes: Array.from(document.querySelectorAll<HTMLElement>("[data-stack-mode]"))
+        .map((flow) => flow.dataset.stackMode),
+      stickySurfaces: Array.from(document.querySelectorAll<HTMLElement>("[data-stack-surface]"))
+        .filter((surface) => getComputedStyle(surface).position === "sticky").length,
+    }));
+
+    expect(initial.coarse).toBe(true);
+    expect(initial.modes).toContain("touch");
+    expect(initial.stickySurfaces, "touch surfaces must not overlap as sticky layers").toBe(0);
+
+    const failures: string[] = [];
+    const maxY = await page.evaluate(() => document.documentElement.scrollHeight - innerHeight);
+    for (const y of [0, 0.18, 0.36, 0.54, 0.72, 0.9, 1, 0.62, 0.28, 0]) {
+      await page.evaluate((target) => window.scrollTo({ top: target, behavior: "instant" }), Math.round(maxY * y));
+      await page.waitForTimeout(180);
+      const current = await page.evaluate(() => {
+        const issues: string[] = [];
+        document.querySelectorAll<HTMLElement>("[data-cover-veil]").forEach((veil) => {
+          if (Number(getComputedStyle(veil).opacity) > 0.001) issues.push("touch cover veil painted over content");
+        });
+        document.querySelectorAll<HTMLImageElement>("img").forEach((image) => {
+          const rect = image.getBoundingClientRect();
+          const visible = rect.bottom > 0 && rect.top < innerHeight && rect.right > 0 && rect.left < innerWidth;
+          if (!visible) return;
+          const style = getComputedStyle(image);
+          const hasBlurPlaceholder = image.style.backgroundImage.includes("data:image");
+          if ((!image.complete || image.naturalWidth < 1) && !hasBlurPlaceholder) {
+            issues.push(`unloaded visible image without placeholder: ${image.currentSrc || image.src}`);
+          }
+          // Some process thumbnails are intentionally subdued until their row
+          // is active; only a fully hidden image indicates a render failure.
+          if (Number(style.opacity) < 0.05) issues.push(`hidden visible image: ${image.currentSrc || image.src}`);
+        });
+        return issues;
+      });
+      failures.push(...current.map((issue) => `scroll ${y}: ${issue}`));
+    }
+
+    expect(failures, failures.join("\n")).toHaveLength(0);
+    await context.close();
   });
 
   for (const viewport of [

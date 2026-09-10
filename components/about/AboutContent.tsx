@@ -113,7 +113,6 @@ function useReveal(sectionRef: React.RefObject<HTMLElement | null>, selector: st
 function AboutHero() {
   const sectionRef = useRef<HTMLElement>(null);
   const photoRef = useRef<HTMLDivElement>(null);
-  const wordmarkRef = useRef<HTMLDivElement>(null);
   const railRef = useRef<HTMLDivElement>(null);
   const statRefs = useRef<(HTMLDivElement | null)[]>([]);
 
@@ -160,19 +159,6 @@ function AboutHero() {
           {
             scale: 1,
             yPercent: -4,
-            ease: "none",
-            scrollTrigger: { trigger: section, start: "top top", end: "bottom top", scrub: true },
-          }
-        );
-      }
-
-      // Joe (IMG_1014): faded brand line spanning the screen.
-      if (wordmarkRef.current) {
-        gsap.fromTo(
-          wordmarkRef.current,
-          { xPercent: 0.9 },
-          {
-            xPercent: -1.2,
             ease: "none",
             scrollTrigger: { trigger: section, start: "top top", end: "bottom top", scrub: true },
           }
@@ -251,62 +237,65 @@ function AboutHero() {
         />
       </div>
 
-      {/* Dossier — floating glass panel, one continuous composition */}
-      <div className="relative z-10 mx-auto flex min-h-[100svh] w-full max-w-[71.875rem] items-start px-6 pb-10 pt-32 sm:pt-36 lg:px-12 lg:pb-10 lg:pt-[11.75rem] 2xl:max-w-[105rem]">
-        <div className="w-full max-w-[24.5rem] border border-white/14 bg-[#070707]/88 p-6 shadow-[0_34px_90px_-42px_rgba(0,0,0,0.9)] backdrop-blur-sm 2xl:max-w-[26rem]">
-        <div>
-          <p data-hero-reveal className="mb-4 flex items-center gap-3 font-labels text-[10px] uppercase tracking-[0.3em] text-white/48">
-            <span className="h-px w-7 bg-accent" aria-hidden="true" />
-            About / 828 Construction
-          </p>
-          <h1 data-hero-reveal className="max-w-md font-editorial text-[clamp(2.25rem,3.1vw,3.25rem)] font-semibold leading-[0.98]">
-            Where quality meets quiet luxury.
-          </h1>
-          <p data-hero-reveal className="mt-4 max-w-sm text-[clamp(0.95rem,1.05vw,1.05rem)] leading-relaxed text-white/64">
-            Every home is shaped by decades of hands-on experience and building
-            science, ensuring exceptional quality and performance.
-          </p>
-        </div>
-
-        <div data-hero-reveal className="mt-6">
-          {proofStats.map((stat, i) => (
-            <div
-              key={stat.label}
-              ref={(el) => {
-                statRefs.current[i] = el;
-              }}
-              className="relative flex items-baseline justify-between py-2.5"
-            >
-              <span data-stat-line className="absolute inset-x-0 top-0 h-px bg-white/12" aria-hidden="true" />
-              <span className="font-labels text-[9px] uppercase tracking-[0.24em] text-white/40">{stat.label}</span>
-              <span className="font-numbers text-sm text-white/90">{stat.value}</span>
-            </div>
-          ))}
-          <div className="relative flex flex-wrap gap-x-6 gap-y-2 pt-4">
-            <span data-stat-line className="absolute inset-x-0 top-0 h-px bg-white/12" aria-hidden="true" />
-            {["Plans before promises", "Field-built judgment", "South Bay residential"].map((item) => (
-              <span key={item} className="flex items-center gap-2.5">
-                <span className="h-1 w-1 rotate-45 bg-accent" aria-hidden="true" />
-                <span className="font-labels text-[8.5px] uppercase tracking-[0.2em] text-white/46">{item}</span>
-              </span>
-            ))}
+      {/* Dossier — a compact project sheet anchored to the quiet side of the photograph. */}
+      <div className="relative z-10 mx-auto flex min-h-[100svh] w-full max-w-[105rem] items-start px-6 pb-10 pt-32 sm:px-8 sm:pt-40 lg:px-12 lg:pt-[12.5rem] 2xl:px-16">
+        <div
+          data-about-dossier=""
+          className="w-full max-w-[38rem] border border-white/14 bg-[#070707]/90 p-6 shadow-[0_34px_90px_-42px_rgba(0,0,0,0.9)] backdrop-blur-sm sm:p-8 lg:grid lg:w-[60%] lg:max-w-none lg:grid-cols-[minmax(0,1.08fr)_minmax(0,0.92fr)] lg:gap-8 lg:p-10 xl:w-[calc(50%+1rem)]"
+        >
+          <div>
+            <p data-hero-reveal className="mb-5 flex items-center gap-3 font-labels text-[10px] uppercase tracking-[0.3em] text-white/48">
+              <span className="h-px w-7 bg-accent" aria-hidden="true" />
+              About / 828 Construction
+            </p>
+            <h1 data-hero-reveal className="max-w-[36rem] font-editorial text-[clamp(2.5rem,4.2vw,3.5rem)] font-semibold leading-[0.96] tracking-[-0.035em] lg:text-[clamp(2rem,3vw,3.5rem)]">
+              Where quality meets quiet luxury.
+            </h1>
+            <p data-hero-reveal className="mt-5 max-w-[34rem] text-[clamp(0.95rem,1.05vw,1.05rem)] leading-[1.65] text-white/64">
+              Every home is shaped by decades of hands-on experience and building
+              science, ensuring exceptional quality and performance.
+            </p>
           </div>
-        </div>
+
+          <div className="lg:border-l lg:border-white/12 lg:pl-8">
+            <div data-hero-reveal className="mt-7 grid border-b border-white/12 sm:grid-cols-3 lg:mt-0 lg:grid-cols-1">
+              {proofStats.map((stat, i) => (
+                <div
+                  key={stat.label}
+                  ref={(el) => {
+                    statRefs.current[i] = el;
+                  }}
+                  className="relative flex items-baseline justify-between border-b border-white/12 py-3 last:border-b-0 sm:block sm:border-b-0 sm:border-r sm:px-5 sm:py-4 sm:first:pl-0 sm:last:border-r-0 sm:last:pr-0 lg:flex lg:border-b lg:border-r-0 lg:px-0 lg:py-3 lg:last:border-b-0"
+                >
+                  <span data-stat-line className="absolute inset-x-0 top-0 h-px bg-white/12" aria-hidden="true" />
+                  <span className="font-labels text-[9px] uppercase tracking-[0.22em] text-white/40">{stat.label}</span>
+                  <span className="font-numbers text-sm text-white/90 sm:mt-2 sm:block lg:mt-0">{stat.value}</span>
+                </div>
+              ))}
+            </div>
+
+            <div data-hero-reveal className="mt-5 flex flex-wrap gap-x-6 gap-y-2.5">
+              {["Plans before promises", "Field-built judgment", "South Bay residential"].map((item) => (
+                <span key={item} className="flex items-center gap-2.5">
+                  <span className="h-1 w-1 rotate-45 bg-accent" aria-hidden="true" />
+                  <span className="font-labels text-[8.5px] uppercase tracking-[0.2em] text-white/46">{item}</span>
+                </span>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
 
       <div
-        ref={wordmarkRef}
+        data-about-static-title=""
         aria-hidden="true"
-        className="pointer-events-none absolute inset-x-0 top-[5.25rem] z-[5] select-none whitespace-nowrap text-center font-editorial font-bold uppercase leading-none text-white/[0.22] sm:top-[5.1rem] lg:top-[5.5rem]"
+        className="about-hero-static-title pointer-events-none absolute inset-x-0 top-[5.25rem] z-[5] select-none overflow-hidden whitespace-nowrap text-center font-editorial font-bold uppercase leading-none text-white/[0.22] sm:top-[5.1rem] lg:top-[5.5rem]"
         style={{
-          fontSize: "clamp(2rem, 7vw, 7rem)",
-          letterSpacing: "0.035em",
+          fontSize: "clamp(1.75rem, 7vw, 7rem)",
           textShadow: "0 2px 24px rgb(0 0 0 / 0.42)",
-          willChange: "transform",
         }}
       >
-        828 Construction
+        <span>828 Construction</span>
       </div>
 
       <div ref={railRef} className="absolute bottom-0 left-0 z-20 h-px w-full bg-accent" aria-hidden="true" />
@@ -585,12 +574,12 @@ function CraftSection() {
           data-motion-reveal="left"
         >
           <div>
-            <p className="mb-5 flex items-center gap-3 font-labels text-[10px] uppercase tracking-[0.28em] text-black/42">
+            <p className="mb-5 flex items-center gap-3 font-labels text-[10px] uppercase tracking-[0.28em] text-black/58">
               <span className="h-px w-7 bg-accent" aria-hidden="true" />
               Method
             </p>
             <h2 className="font-editorial text-[clamp(1.9rem,2.6vw,2.5rem)] font-light leading-[1.05]">
-              The mindset behind every build.
+              Exceptional thinking, exceptional building.
             </h2>
           </div>
         </div>

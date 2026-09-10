@@ -77,18 +77,18 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: [
-      { url: "/favicon-16x16.png?v=20260831", sizes: "16x16", type: "image/png" },
-      { url: "/favicon-32x32.png?v=20260831", sizes: "32x32", type: "image/png" },
-      { url: "/favicon-48x48.png?v=20260831", sizes: "48x48", type: "image/png" },
+      { url: "/favicon-828-v2-16x16.png?v=20260907", sizes: "16x16", type: "image/png" },
+      { url: "/favicon-828-v2-32x32.png?v=20260907", sizes: "32x32", type: "image/png" },
+      { url: "/favicon-828-v2-48x48.png?v=20260907", sizes: "48x48", type: "image/png" },
     ],
     apple: [
-      { url: "/apple-touch-icon.png?v=20260831", sizes: "180x180", type: "image/png" },
+      { url: "/apple-touch-icon-828-v2.png?v=20260907", sizes: "180x180", type: "image/png" },
     ],
     other: [
-      { rel: "shortcut icon", url: "/favicon.ico?v=20260831" },
+      { rel: "shortcut icon", url: "/favicon-828-v2.ico?v=20260907" },
     ],
   },
-  manifest: "/site.webmanifest?v=20260831",
+  manifest: "/site.webmanifest?v=20260907",
 };
 
 export default function RootLayout({
