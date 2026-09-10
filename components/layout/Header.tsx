@@ -332,7 +332,7 @@ export default function Header() {
           <div
             className="flex h-12 items-center justify-between lg:h-[52px] lg:grid lg:grid-cols-[minmax(220px,1fr)_auto_minmax(220px,1fr)] lg:gap-10"
           >
-            {/* Clean digital wordmark based on the owner's shirt reference. It
+            {/* Refined horizontal wordmark based on the owner's shirt reference. It
                 is inverted on light sections so one transparent asset works
                 on every surface. */}
             <Link
@@ -344,12 +344,13 @@ export default function Header() {
               }}
             >
               <Image
-                src="/images/logo/828construction-reference-clean-v3-white.png"
+                src="/images/logo/828construction-header-v5-white.png"
                 alt=""
-                width={4980}
-                height={800}
+                width={2018}
+                height={335}
                 priority
-                className="h-[25px] w-auto min-[390px]:h-[26px] sm:h-7 lg:h-[29px]"
+                unoptimized
+                className="h-auto w-[132px] sm:w-[140px] lg:w-[145px]"
                 style={{
                   filter: lightInk ? "invert(1)" : "none",
                   transition: "filter 520ms cubic-bezier(0.22,1,0.36,1)",
