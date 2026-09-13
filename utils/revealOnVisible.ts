@@ -26,6 +26,7 @@ export function revealOnVisible(
   const indices = new Map(els.map((el, i) => [el, i] as const));
   const revealed = new Set<Element>();
   const entranceAnimations = new Set<gsap.core.Animation>();
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
   let windowStartedAt = performance.now();
   let windowStartedY = window.scrollY;
   let lastEventY = window.scrollY;
@@ -51,14 +52,13 @@ export function revealOnVisible(
       });
     }
   };
-  window.addEventListener("scroll", noteScrollVelocity, { passive: true });
 
   let io: IntersectionObserver | null = null;
   const revealEntry = (el: Element, index: number, forceImmediate = false) => {
     if (revealed.has(el)) return;
     revealed.add(el);
     io?.unobserve(el);
-    const immediate = forceImmediate || performance.now() < jumpUntil;
+    const immediate = forceImmediate || reducedMotion.matches || performance.now() < jumpUntil;
     const before = new Set(gsap.globalTimeline.getChildren(true, true, true));
     reveal(el, index, immediate);
     gsap.globalTimeline.getChildren(true, true, true).forEach((animation) => {
@@ -85,9 +85,11 @@ export function revealOnVisible(
     const currentY = window.scrollY;
     const movingDown = currentY >= previousY;
     previousY = currentY;
-    els.forEach((el, index) => {
-      if (revealed.has(el)) return;
-      const rect = el.getBoundingClientRect();
+    // Read the remaining geometry before any reveal writes its transforms.
+    els.map((el, index) => ({ el, index }))
+      .filter(({ el }) => !revealed.has(el))
+      .map(({ el, index }) => ({ el, index, rect: el.getBoundingClientRect() }))
+      .forEach(({ el, index, rect }) => {
       const inBand = rect.top <= window.innerHeight * 0.92 && rect.bottom >= window.innerHeight * 0.04;
       if (inBand) revealEntry(el, index);
       else if (movingDown && rect.bottom < window.innerHeight * 0.04) {
@@ -96,13 +98,26 @@ export function revealOnVisible(
     });
   };
   const scheduleInspect = () => {
-    if (!frame) frame = requestAnimationFrame(inspect);
+    if (revealed.size < els.length && !frame) frame = requestAnimationFrame(inspect);
   };
   const onScroll = () => {
+    entranceAnimations.forEach((animation) => {
+      if (animation.totalProgress() >= 1) entranceAnimations.delete(animation);
+    });
+    if (revealed.size === els.length && entranceAnimations.size === 0) {
+      window.removeEventListener("scroll", onScroll);
+      return;
+    }
     noteScrollVelocity();
     scheduleInspect();
   };
-  window.removeEventListener("scroll", noteScrollVelocity);
+  const finishForReducedMotion = () => {
+    if (!reducedMotion.matches) return;
+    entranceAnimations.forEach((animation) => animation.totalProgress(1));
+    els.forEach((el, index) => revealEntry(el, index, true));
+  };
+  reducedMotion.addEventListener("change", finishForReducedMotion);
+  window.addEventListener("resize", scheduleInspect, { passive: true });
   window.addEventListener("scroll", onScroll, { passive: true });
   const probeTimers = [120, 420, 900].map((delay) => window.setTimeout(scheduleInspect, delay));
 
@@ -111,6 +126,8 @@ export function revealOnVisible(
     probeTimers.forEach(clearTimeout);
     io?.disconnect();
     window.removeEventListener("scroll", onScroll);
+    window.removeEventListener("resize", scheduleInspect);
+    reducedMotion.removeEventListener("change", finishForReducedMotion);
     // Observer callbacks run after the surrounding gsap.context() has been
     // created, so their entrance tweens are not owned by that context. Kill
     // interrupted tweens explicitly on route changes; merely clearing this

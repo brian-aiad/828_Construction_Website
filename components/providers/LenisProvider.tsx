@@ -24,9 +24,12 @@ function attachRevealFailsafe() {
   if (typeof window === "undefined" || typeof IntersectionObserver === "undefined") return;
 
   const GRACE_MS = 2500;
+  const timers = new Set<ReturnType<typeof setTimeout>>();
+  const recoveryTweens = new Set<gsap.core.Tween>();
+  let disposed = false;
 
   const shouldForceReveal = (el: HTMLElement): boolean => {
-    if (!el.isConnected) return false;
+    if (disposed || !el.isConnected) return false;
     const style = window.getComputedStyle(el);
     const opacity = parseFloat(style.opacity);
     const clip = style.clipPath;
@@ -41,7 +44,7 @@ function attachRevealFailsafe() {
   };
 
   const forceReveal = (el: HTMLElement) => {
-    gsap.to(el, {
+    const tween = gsap.to(el, {
       // autoAlpha (not bare opacity): GSAP's autoAlpha-hidden elements carry
       // visibility:hidden alongside opacity:0 — restoring only opacity left
       // them invisible and "rescued" at the same time (found 2026-07-13).
@@ -52,10 +55,11 @@ function attachRevealFailsafe() {
       yPercent: 0,
       xPercent: 0,
       scale: 1,
-      duration: 0.55,
+      duration: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? 0 : 0.55,
       ease: "power2.out",
       overwrite: true,
     });
+    recoveryTweens.add(tween);
   };
 
   const observer = new IntersectionObserver(
@@ -65,9 +69,11 @@ function attachRevealFailsafe() {
         const el = entry.target as HTMLElement;
         observer.unobserve(el);
 
-        setTimeout(() => {
+        const timer = setTimeout(() => {
+          timers.delete(timer);
           if (shouldForceReveal(el)) forceReveal(el);
         }, GRACE_MS);
+        timers.add(timer);
       });
     },
     { threshold: 0.05, rootMargin: "0px 0px -5% 0px" }
@@ -97,14 +103,21 @@ function attachRevealFailsafe() {
     }
   });
 
-  return observer;
+  return () => {
+    disposed = true;
+    observer.disconnect();
+    timers.forEach(clearTimeout);
+    recoveryTweens.forEach((tween) => tween.kill());
+    timers.clear();
+    recoveryTweens.clear();
+  };
 }
 
 export default function LenisProvider({ children }: { children: ReactNode }) {
   const lenisRef = useRef<Lenis | null>(null);
   const pathname = usePathname();
   const isFirstMount = useRef(true);
-  const failsafeObserverRef = useRef<IntersectionObserver | null>(null);
+  const failsafeCleanupRef = useRef<(() => void) | null>(null);
   const [smoothScrollEnabled, setSmoothScrollEnabled] = useState(false);
 
   useEffect(() => {
@@ -133,8 +146,8 @@ export default function LenisProvider({ children }: { children: ReactNode }) {
   const refreshMotion = useCallback(() => {
     if (lenisRef.current) lenisRef.current.resize();
     ScrollTrigger.refresh(true);
-    failsafeObserverRef.current?.disconnect();
-    failsafeObserverRef.current = attachRevealFailsafe() ?? null;
+    failsafeCleanupRef.current?.();
+    failsafeCleanupRef.current = attachRevealFailsafe() ?? null;
   }, []);
 
   // ── Scroll restoration — fires synchronously before any useEffect ──────────
@@ -185,6 +198,8 @@ export default function LenisProvider({ children }: { children: ReactNode }) {
       // Must be in CLEANUP (not body) so it fires BEFORE the new page's
       // children useEffects create their ScrollTriggers.
       return () => {
+        failsafeCleanupRef.current?.();
+        failsafeCleanupRef.current = null;
         window.removeEventListener("load", doRefresh);
         if (refreshFrame) cancelAnimationFrame(refreshFrame);
         if (nestedRefreshFrame) cancelAnimationFrame(nestedRefreshFrame);
@@ -227,6 +242,8 @@ export default function LenisProvider({ children }: { children: ReactNode }) {
     }, 340);
 
     return () => {
+      failsafeCleanupRef.current?.();
+      failsafeCleanupRef.current = null;
       clearTimeout(refreshTimer);
       resetFrames.forEach(cancelAnimationFrame);
       resetTimers.forEach(clearTimeout);
@@ -295,7 +312,7 @@ export default function LenisProvider({ children }: { children: ReactNode }) {
       clearTimeout(resizeTimer);
       window.removeEventListener("resize", onResize);
       document.removeEventListener("visibilitychange", onVisibility);
-      failsafeObserverRef.current?.disconnect();
+      failsafeCleanupRef.current?.();
       lenis.destroy();
       delete (window as unknown as { __lenis828?: Lenis }).__lenis828;
       lenisRef.current = null;

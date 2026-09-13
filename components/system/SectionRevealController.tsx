@@ -40,10 +40,11 @@ export default function SectionRevealController() {
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
     const desktopMotion = window.matchMedia(DESKTOP_MOTION_QUERY);
     const coarseTouch = window.matchMedia(COARSE_TABLET_QUERY);
-    const staticEntrancesEnabled = () =>
-      !desktopMotion.matches || reducedMotion.matches || coarseTouch.matches;
-    const distance = window.innerWidth < 768 ? 20 : window.innerWidth < 1280 ? 26 : 34;
-    const duration = window.innerWidth < 768 ? 0.64 : window.innerWidth < 1280 ? 0.7 : 0.76;
+    // Touch devices retain native scrolling; only their entrance distance and
+    // duration are reduced. A motion preference always takes precedence.
+    const staticEntrancesEnabled = () => reducedMotion.matches;
+    const compactMotion = () => !desktopMotion.matches || coarseTouch.matches;
+    const entranceDistance = () => compactMotion() ? 12 : window.innerWidth < 1280 ? 26 : 34;
     const units: RevealUnit[] = roots.map((trigger) => {
       const stagger = numberFromDataset(trigger.dataset.motionStagger);
       const children = stagger > 0
@@ -100,6 +101,7 @@ export default function SectionRevealController() {
       }
 
       units.forEach((unit) => {
+        const distance = entranceDistance();
         const from =
           unit.direction === "left"
             ? { x: -distance, y: 0 }
@@ -134,9 +136,11 @@ export default function SectionRevealController() {
         opacity: 1,
         x: 0,
         y: 0,
-        duration,
-        delay: unit.delay,
-        stagger: unit.stagger,
+        duration: compactMotion() ? 0.48 : 0.7,
+        delay: compactMotion() ? Math.min(unit.delay, 0.1) : unit.delay,
+        stagger: compactMotion()
+          ? Math.min(unit.stagger, 0.3 / Math.max(1, unit.targets.length - 1))
+          : unit.stagger,
         ease: "power2.out",
         force3D: true,
         overwrite: "auto",
@@ -158,8 +162,7 @@ export default function SectionRevealController() {
       };
     };
 
-    units.forEach((unit) => {
-      const state = viewportBand(unit);
+    units.map((unit) => ({ unit, state: viewportBand(unit) })).forEach(({ unit, state }) => {
       if (state.passed) reveal(unit, true);
       else if (state.inBand) reveal(unit);
     });
@@ -222,9 +225,9 @@ export default function SectionRevealController() {
         recentlyJumped() ||
         Math.abs(window.scrollY - lastScrollY) > window.innerHeight * 1.25;
       lastScrollY = window.scrollY;
-      units.forEach((unit) => {
-        if (unit.revealed) return;
-        const state = viewportBand(unit);
+      units.filter((unit) => !unit.revealed)
+        .map((unit) => ({ unit, state: viewportBand(unit) }))
+        .forEach(({ unit, state }) => {
         if (state.inBand) reveal(unit, jumped);
         else if (movingDown && state.passed) reveal(unit, true);
       });
@@ -243,16 +246,26 @@ export default function SectionRevealController() {
       window.setTimeout(scheduleInspect, delay)
     );
     const onFocusIn = (event: FocusEvent) => {
+      // Finish an already-running entrance too, so a keyboard user never
+      // focuses a partially transparent control.
       const target = event.target instanceof Element
         ? event.target.closest<HTMLElement>(SELECTOR)
         : null;
       const unit = target
         ? units.find((candidate) => candidate.trigger === target)
         : undefined;
-      if (unit) reveal(unit, true);
+      if (unit) {
+        activeTweens.forEach((tween) => {
+          if (tween.targets().some((target) => unit.targets.includes(target as HTMLElement))) {
+            tween.totalProgress(1);
+          }
+        });
+        reveal(unit, true);
+      }
     };
     const finishForStaticMotion = () => {
       if (!staticEntrancesEnabled()) return;
+      activeTweens.forEach((tween) => tween.totalProgress(1));
       units.forEach((unit) => reveal(unit, true));
     };
 

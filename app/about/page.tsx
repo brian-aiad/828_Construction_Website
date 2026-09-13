@@ -17,8 +17,8 @@ export const metadata: Metadata = {
     title,
     description,
     path: "/about",
-    image: "/images/generated/about-hero-quality-luxury-v6.webp",
-    imageAlt: "828 Construction planning table and residential framing",
+    image: "/images/generated/about-hero-craft-v7.webp",
+    imageAlt: "Architectural illustration of warm oak joinery and a California residential interior",
   }),
 };
 

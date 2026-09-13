@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useRef } from "react";
-import { AnimationController } from "@/utils/animationControl";
+import { useEffect, useRef, useState } from "react";
+import { COARSE_TABLET_QUERY, DESKTOP_MOTION_QUERY } from "@/utils/animationControl";
 
 // Custom cursor: main dot (mixBlendMode:difference) + lagging ring + copper trail.
 // The native cursor remains active until the custom cursor has received a real
@@ -13,12 +13,24 @@ export default function CustomCursor() {
   const ringRef = useRef<HTMLDivElement>(null);
   const copperRef = useRef<HTMLDivElement>(null);
 
+  const [enabled, setEnabled] = useState(false);
+
+  useEffect(() => {
+    const queries = [
+      window.matchMedia("(pointer: fine)"),
+      window.matchMedia(DESKTOP_MOTION_QUERY),
+      window.matchMedia(COARSE_TABLET_QUERY),
+      window.matchMedia("(prefers-reduced-motion: reduce)"),
+    ];
+    const sync = () => setEnabled(queries[0].matches && queries[1].matches && !queries[2].matches && !queries[3].matches);
+    sync();
+    queries.forEach((query) => query.addEventListener("change", sync));
+    return () => queries.forEach((query) => query.removeEventListener("change", sync));
+  }, []);
+
   useEffect(() => {
     document.body.classList.remove("has-custom-cursor");
-    if (
-      !window.matchMedia("(pointer: fine)").matches ||
-      !AnimationController.shouldAnimate()
-    ) return;
+    if (!enabled) return;
 
     const dot = dotRef.current;
     const ring = ringRef.current;
@@ -40,9 +52,13 @@ export default function CustomCursor() {
     let copperX = 0, copperY = 0;
     let curX = 0, curY = 0;
     let hasPointer = false;
+    let lastFrame = 0;
 
     const hideCursor = () => {
       hasPointer = false;
+      if (rafId) cancelAnimationFrame(rafId);
+      rafId = 0;
+      lastFrame = 0;
       dot.style.opacity = "0";
       ring.style.opacity = "0";
       copper.style.opacity = "0";
@@ -64,18 +80,24 @@ export default function CustomCursor() {
         document.body.classList.add("has-custom-cursor");
       }
       dot.style.transform = `translate(${curX}px, ${curY}px)`;
-      if (!rafId) rafId = requestAnimationFrame(animate);
+      if (!rafId) {
+        lastFrame = performance.now();
+        rafId = requestAnimationFrame(animate);
+      }
     };
 
-    const animate = () => {
-      // Ring: 14% lerp
-      ringX += (curX - ringX) * 0.14;
-      ringY += (curY - ringY) * 0.14;
+    const animate = (now: number) => {
+      // Preserve the same response on 60Hz, 90Hz, and 120Hz displays.
+      const elapsed = Math.min(64, Math.max(0, now - lastFrame)) / (1000 / 60);
+      lastFrame = now;
+      const ringFollow = 1 - Math.pow(0.86, elapsed);
+      const copperFollow = 1 - Math.pow(0.91, elapsed);
+      ringX += (curX - ringX) * ringFollow;
+      ringY += (curY - ringY) * ringFollow;
       ring.style.transform = `translate(${ringX}px, ${ringY}px)`;
 
-      // Copper trail: 9% lerp (slightly faster than ring for warmth)
-      copperX += (curX - copperX) * 0.09;
-      copperY += (curY - copperY) * 0.09;
+      copperX += (curX - copperX) * copperFollow;
+      copperY += (curY - copperY) * copperFollow;
       copper.style.transform = `translate(${copperX}px, ${copperY}px)`;
 
       const ringSettled = Math.abs(curX - ringX) < 0.1 && Math.abs(curY - ringY) < 0.1;
@@ -94,36 +116,32 @@ export default function CustomCursor() {
 
     // The maroon ring remains legible on both the white and black surfaces.
     const resetRing = () => {
-      ring.style.width = "36px";
-      ring.style.height = "36px";
-      ring.style.marginLeft = "-18px";
-      ring.style.marginTop = "-18px";
+      ring.style.scale = "1.000000";
       ring.style.borderColor = "rgba(123,45,38,0.95)";
       ring.style.opacity = hasPointer ? "1" : "0";
     };
 
     // Hover over links/buttons: ring grows.
     const onInteractive = () => {
-      ring.style.width = "64px";
-      ring.style.height = "64px";
-      ring.style.marginLeft = "-32px";
-      ring.style.marginTop = "-32px";
+      ring.style.scale = "1.777778";
       ring.style.borderColor = "rgba(123,45,38,1)";
       ring.style.opacity = hasPointer ? "1" : "0";
     };
 
     // Hover over images: ring becomes maroon and expands (upgraded 52→70px)
     const onImage = () => {
-      ring.style.width = "70px";
-      ring.style.height = "70px";
-      ring.style.marginLeft = "-35px";
-      ring.style.marginTop = "-35px";
+      ring.style.scale = "1.944444";
       ring.style.borderColor = "var(--color-accent)";
       ring.style.opacity = hasPointer ? "0.85" : "0";
     };
 
     window.addEventListener("mousemove", handleMove, { passive: true });
     document.addEventListener("mouseleave", hideCursor);
+    window.addEventListener("blur", hideCursor);
+    const onVisibility = () => {
+      if (document.hidden) hideCursor();
+    };
+    document.addEventListener("visibilitychange", onVisibility);
 
     const isInteractiveTarget = (target: EventTarget | null) =>
       target instanceof Element && Boolean(target.closest("a, button, [role='button'], input, select, textarea, [data-cursor-grow]"));
@@ -162,11 +180,14 @@ export default function CustomCursor() {
       document.body.classList.remove("has-custom-cursor");
       window.removeEventListener("mousemove", handleMove);
       document.removeEventListener("mouseleave", hideCursor);
+      window.removeEventListener("blur", hideCursor);
+      document.removeEventListener("visibilitychange", onVisibility);
+      [dot, ring, copper].forEach((el) => { el.style.display = "none"; });
       if (rafId) cancelAnimationFrame(rafId);
       document.removeEventListener("pointerover", handlePointerOver);
       document.removeEventListener("pointerout", handlePointerOut);
     };
-  }, []);
+  }, [enabled]);
 
   return (
     <>
@@ -225,7 +246,7 @@ export default function CustomCursor() {
           marginLeft: -18, marginTop: -18,
           borderRadius: "50%",
           border: "1.5px solid rgba(123,45,38,0.95)",
-          transition: "width 0.25s ease, height 0.25s ease, margin 0.25s ease, border-color 0.25s ease, opacity 0.25s ease",
+          transition: "scale 0.25s ease, border-color 0.25s ease, opacity 0.25s ease",
           willChange: "transform, opacity",
         }}
       />

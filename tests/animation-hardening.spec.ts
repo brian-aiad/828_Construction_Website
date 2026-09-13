@@ -306,16 +306,18 @@ test.describe("animation hardening", () => {
     }
   }
 
-  test("about title stays static while the dossier remains a compact left-side sheet", async ({ page }) => {
+  test("about hero keeps its static title, readable content, and responsive bounds", async ({ page }) => {
     test.setTimeout(60_000);
     await skipSplash(page);
 
     for (const viewport of [
-      { width: 390, height: 844, compact: false },
-      { width: 768, height: 1024, compact: true },
-      { width: 1024, height: 768, compact: true },
-      { width: 1440, height: 900, compact: true },
-      { width: 2048, height: 900, compact: true },
+      { width: 320, height: 568 },
+      { width: 390, height: 844 },
+      { width: 768, height: 1024 },
+      { width: 844, height: 390 },
+      { width: 1024, height: 768 },
+      { width: 1440, height: 900 },
+      { width: 2048, height: 900 },
     ]) {
       await page.setViewportSize({ width: viewport.width, height: viewport.height });
       await page.goto(`${BASE}/about`, { waitUntil: "domcontentloaded" });
@@ -331,6 +333,9 @@ test.describe("animation hardening", () => {
         return {
           text: title.textContent?.trim(),
           titleLeft: titleRect.left,
+          titleBottom: titleRect.bottom,
+          titleRight: titleRect.right,
+          dossierTop: dossierRect.top,
           animationName: titleStyle.animationName,
           transform: titleStyle.transform,
           dossierWidth: dossierRect.width,
@@ -346,22 +351,13 @@ test.describe("animation hardening", () => {
       expect(initial?.animationName).toBe("none");
       expect(initial?.transform).toBe("none");
       expect(initial?.overflow).toBeLessThanOrEqual(1);
-      if (viewport.compact) {
-        expect(
-          (initial?.dossierWidth ?? 0) / Math.max(initial?.dossierHeight ?? 1, 1),
-          `${viewport.width}px: dossier should be wider than it is tall`
-        ).toBeGreaterThan(1.35);
-        expect(
-          initial?.dossierRight ?? viewport.width,
-          `${viewport.width}px: dossier should stay anchored to the left side of the hero`
-        ).toBeLessThanOrEqual(viewport.width * 0.84);
-        expect(
-          initial?.dossierRight ?? 0,
-          `${viewport.width}px: dossier should extend slightly beyond the screen midpoint`
-        ).toBeGreaterThan(viewport.width / 2);
-      } else {
-        expect(initial?.dossierHeight ?? 0).toBeGreaterThan(initial?.dossierWidth ?? 0);
-      }
+      expect(initial?.titleLeft).toBeGreaterThanOrEqual(0);
+      expect(initial?.titleRight).toBeLessThanOrEqual(viewport.width);
+      expect(initial?.dossierLeft).toBeGreaterThanOrEqual(0);
+      expect(initial?.dossierRight).toBeLessThanOrEqual(viewport.width);
+      expect(initial?.dossierTop).toBeGreaterThan(initial?.titleBottom ?? 0);
+      await expect(page.locator("h1")).toBeVisible();
+      await expect(page.locator("[data-about-dossier]")).toContainText("#1141119");
 
       await page.evaluate(() => window.scrollTo({ top: 160, behavior: "instant" }));
       await settle(page, 250);

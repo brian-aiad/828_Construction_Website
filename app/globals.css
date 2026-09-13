@@ -648,7 +648,7 @@ html.lenis body {
   content: '';
   position: absolute;
   top: 0;
-  left: -100%;
+  left: 0;
   width: 60%;
   height: 100%;
   background: linear-gradient(
@@ -657,11 +657,12 @@ html.lenis body {
     rgba(255, 255, 255, 0.18),
     transparent
   );
-  transition: left 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+  transform: translateX(-166.6667%);
+  transition: transform 0.55s cubic-bezier(0.16, 1, 0.3, 1);
   pointer-events: none;
 }
 .btn-shine:hover::before {
-  left: 160%;
+  transform: translateX(266.6667%);
 }
 
 /* ── Outline CTA button — border brightens + subtle fill on hover ────────── */
