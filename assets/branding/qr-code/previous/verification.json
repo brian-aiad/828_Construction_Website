@@ -1,0 +1,250 @@
+{
+  "url": "https://828constructions.com/",
+  "type": "static; direct URL; no QR provider or subscription",
+  "version": 4,
+  "error_correction": "H",
+  "quiet_zone_modules": 4,
+  "center_clearance_modules": [
+    13,
+    9
+  ],
+  "source_logo_sha256": "ab7d3be821ebfcc12f22026b762c5c012e7fabe12d842a92732b512fdbd6dd6b",
+  "logo_presentation": "Original artwork on black; outer transparent padding trimmed",
+  "logo_crop": [
+    77,
+    320,
+    1178,
+    974
+  ],
+  "tests": [
+    {
+      "case": "original PNG",
+      "width_px": 2460,
+      "zxing_pass": true,
+      "opencv_pass": true,
+      "zxing_decoded": [
+        "https://828constructions.com/"
+      ],
+      "opencv_decoded": "https://828constructions.com/"
+    },
+    {
+      "case": "SVG rendered at 1230px",
+      "width_px": 1230,
+      "zxing_pass": true,
+      "opencv_pass": true,
+      "zxing_decoded": [
+        "https://828constructions.com/"
+      ],
+      "opencv_decoded": "https://828constructions.com/"
+    },
+    {
+      "case": "PDF rendered at 300dpi",
+      "width_px": 1200,
+      "zxing_pass": true,
+      "opencv_pass": true,
+      "zxing_decoded": [
+        "https://828constructions.com/"
+      ],
+      "opencv_decoded": "https://828constructions.com/"
+    },
+    {
+      "case": "resize 256px",
+      "width_px": 256,
+      "zxing_pass": true,
+      "opencv_pass": true,
+      "zxing_decoded": [
+        "https://828constructions.com/"
+      ],
+      "opencv_decoded": "https://828constructions.com/"
+    },
+    {
+      "case": "resize 320px",
+      "width_px": 320,
+      "zxing_pass": true,
+      "opencv_pass": true,
+      "zxing_decoded": [
+        "https://828constructions.com/"
+      ],
+      "opencv_decoded": "https://828constructions.com/"
+    },
+    {
+      "case": "resize 480px",
+      "width_px": 480,
+      "zxing_pass": true,
+      "opencv_pass": true,
+      "zxing_decoded": [
+        "https://828constructions.com/"
+      ],
+      "opencv_decoded": "https://828constructions.com/"
+    },
+    {
+      "case": "resize 800px",
+      "width_px": 800,
+      "zxing_pass": true,
+      "opencv_pass": true,
+      "zxing_decoded": [
+        "https://828constructions.com/"
+      ],
+      "opencv_decoded": "https://828constructions.com/"
+    },
+    {
+      "case": "resize 1230px",
+      "width_px": 1230,
+      "zxing_pass": true,
+      "opencv_pass": true,
+      "zxing_decoded": [
+        "https://828constructions.com/"
+      ],
+      "opencv_decoded": "https://828constructions.com/"
+    },
+    {
+      "case": "rotation -20 degrees",
+      "width_px": 1026,
+      "zxing_pass": true,
+      "opencv_pass": true,
+      "zxing_decoded": [
+        "https://828constructions.com/"
+      ],
+      "opencv_decoded": "https://828constructions.com/"
+    },
+    {
+      "case": "rotation -10 degrees",
+      "width_px": 928,
+      "zxing_pass": true,
+      "opencv_pass": true,
+      "zxing_decoded": [
+        "https://828constructions.com/"
+      ],
+      "opencv_decoded": "https://828constructions.com/"
+    },
+    {
+      "case": "rotation 10 degrees",
+      "width_px": 928,
+      "zxing_pass": true,
+      "opencv_pass": true,
+      "zxing_decoded": [
+        "https://828constructions.com/"
+      ],
+      "opencv_decoded": "https://828constructions.com/"
+    },
+    {
+      "case": "rotation 20 degrees",
+      "width_px": 1026,
+      "zxing_pass": true,
+      "opencv_pass": true,
+      "zxing_decoded": [
+        "https://828constructions.com/"
+      ],
+      "opencv_decoded": "https://828constructions.com/"
+    },
+    {
+      "case": "rotation 90 degrees",
+      "width_px": 800,
+      "zxing_pass": true,
+      "opencv_pass": true,
+      "zxing_decoded": [
+        "https://828constructions.com/"
+      ],
+      "opencv_decoded": "https://828constructions.com/"
+    },
+    {
+      "case": "rotation 180 degrees",
+      "width_px": 800,
+      "zxing_pass": true,
+      "opencv_pass": true,
+      "zxing_decoded": [
+        "https://828constructions.com/"
+      ],
+      "opencv_decoded": "https://828constructions.com/"
+    },
+    {
+      "case": "rotation 270 degrees",
+      "width_px": 800,
+      "zxing_pass": true,
+      "opencv_pass": true,
+      "zxing_decoded": [
+        "https://828constructions.com/"
+      ],
+      "opencv_decoded": "https://828constructions.com/"
+    },
+    {
+      "case": "blur radius 0.5px at 800px",
+      "width_px": 800,
+      "zxing_pass": true,
+      "opencv_pass": true,
+      "zxing_decoded": [
+        "https://828constructions.com/"
+      ],
+      "opencv_decoded": "https://828constructions.com/"
+    },
+    {
+      "case": "blur radius 1px at 800px",
+      "width_px": 800,
+      "zxing_pass": true,
+      "opencv_pass": true,
+      "zxing_decoded": [
+        "https://828constructions.com/"
+      ],
+      "opencv_decoded": "https://828constructions.com/"
+    },
+    {
+      "case": "blur radius 1.5px at 800px",
+      "width_px": 800,
+      "zxing_pass": true,
+      "opencv_pass": true,
+      "zxing_decoded": [
+        "https://828constructions.com/"
+      ],
+      "opencv_decoded": "https://828constructions.com/"
+    },
+    {
+      "case": "JPEG quality 45",
+      "width_px": 800,
+      "zxing_pass": true,
+      "opencv_pass": true,
+      "zxing_decoded": [
+        "https://828constructions.com/"
+      ],
+      "opencv_decoded": "https://828constructions.com/"
+    },
+    {
+      "case": "JPEG quality 75",
+      "width_px": 800,
+      "zxing_pass": true,
+      "opencv_pass": true,
+      "zxing_decoded": [
+        "https://828constructions.com/"
+      ],
+      "opencv_decoded": "https://828constructions.com/"
+    },
+    {
+      "case": "perspective distortion",
+      "width_px": 820,
+      "zxing_pass": true,
+      "opencv_pass": true,
+      "zxing_decoded": [
+        "https://828constructions.com/"
+      ],
+      "opencv_decoded": "https://828constructions.com/"
+    },
+    {
+      "case": "reduced contrast",
+      "width_px": 800,
+      "zxing_pass": true,
+      "opencv_pass": true,
+      "zxing_decoded": [
+        "https://828constructions.com/"
+      ],
+      "opencv_decoded": "https://828constructions.com/"
+    }
+  ],
+  "all_passed": true,
+  "website_check": {
+    "status": 200,
+    "final_url": "https://828constructions.com/",
+    "checked_on": "2026-09-10",
+    "method": "curl GET with HTTPS validation",
+    "page_title": "828 Construction | ADU, Remediation & Consulting - Torrance, CA",
+    "note": "Python urllib default user agent received 403; curl GET and HEAD succeeded."
+  }
+}
