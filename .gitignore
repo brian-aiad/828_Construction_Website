@@ -12,6 +12,8 @@
 
 # testing
 /coverage
+/playwright-report/
+/test-results/
 
 # next.js
 /.next/
@@ -44,6 +46,8 @@ prod-server-*.log
 *.tsbuildinfo
 next-env.d.ts
 .claude-work/
+/.claude/worktrees/
+/.preflight-passed
 
 # local visual QA artifacts
 /research/

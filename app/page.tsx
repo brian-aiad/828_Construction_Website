@@ -46,7 +46,7 @@ const jsonLd = {
       },
       logo: {
         "@type": "ImageObject",
-        url: `${SITE.url}/android-chrome-512x512.png`,
+        url: `${SITE.url}/android-chrome-828-v2-512x512.png?v=20260907`,
         width: 512,
         height: 512,
       },
