@@ -350,7 +350,7 @@ export default function Header() {
                 height={246}
                 priority
                 unoptimized
-                className="block h-auto w-[168px] shrink-0 opacity-[0.82] sm:w-[188px] lg:w-[204px]"
+                className="block h-auto w-[132px] shrink-0 opacity-[0.82] sm:w-[144px] lg:w-[150px]"
                 style={{
                   filter: lightInk ? "invert(1)" : "none",
                   transition: "filter 520ms cubic-bezier(0.22,1,0.36,1)",
