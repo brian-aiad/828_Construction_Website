@@ -6,7 +6,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node C:/Users/kingt/Desktop/828website/.claude/hooks/check-preflight.js"
+            "command": "node .claude/hooks/check-preflight.js"
           }
         ]
       }

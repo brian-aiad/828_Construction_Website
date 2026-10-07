@@ -202,3 +202,63 @@ test.describe("contact form browser hardening", () => {
   });
 
 });
+
+test("a stalled secure connection releases the form and preserves details for retry", async ({ page }) => {
+  await page.clock.install();
+  let stalled = true;
+  await page.route("**/api/contact/challenge", async (route) => {
+    if (stalled) return;
+    await route.fulfill({
+      status: 200,
+      contentType: "application/json",
+      body: JSON.stringify({ token: "browser-challenge-recovered", minWaitMs: 0 }),
+    });
+  });
+  await page.route("**/api/contact", async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: "application/json",
+      body: JSON.stringify({ ok: true, reference: "828-RECOVERED" }),
+    });
+  });
+  await page.goto("/contact", { waitUntil: "domcontentloaded" });
+  await fillMainForm(page);
+  await page.getByRole("button", { name: /send project details/i }).click();
+  await page.clock.fastForward(12_100);
+  await expect(page.getByText(/The secure form could not connect/)).toBeVisible();
+  await expect(page.locator("#cf-name")).toHaveValue("Browser Regression Customer");
+  await expect(page.locator("#cf-message")).not.toHaveValue("");
+  const retry = page.locator("button[type=submit]");
+  await expect(retry).toBeEnabled();
+  stalled = false;
+  await retry.click();
+  await expect(page.getByText("Ref. 828-RECOVERED")).toBeVisible();
+});
+
+test("a stalled delivery reports uncertainty and allows a safe retry", async ({ page }) => {
+  await page.clock.install();
+  const challengeRequests = await mockChallenge(page);
+  let stalled = true;
+  await page.route("**/api/contact", async (route) => {
+    if (stalled) return;
+    await route.fulfill({
+      status: 200,
+      contentType: "application/json",
+      body: JSON.stringify({ ok: true, reference: "828-DELIVERY-RETRY" }),
+    });
+  });
+  await page.goto("/contact", { waitUntil: "domcontentloaded" });
+  await waitForFormHydration(challengeRequests);
+  await fillMainForm(page);
+  const request = page.waitForRequest((r) => new URL(r.url()).pathname === "/api/contact");
+  await page.getByRole("button", { name: /send project details/i }).click();
+  await request;
+  await page.clock.fastForward(45_100);
+  await expect(page.getByText(/We couldn’t confirm delivery/)).toBeVisible();
+  await expect(page.locator("#cf-email")).toHaveValue("browser.regression@example.com");
+  const retry = page.locator("button[type=submit]");
+  await expect(retry).toBeEnabled();
+  stalled = false;
+  await retry.click();
+  await expect(page.getByText("Ref. 828-DELIVERY-RETRY")).toBeVisible();
+});

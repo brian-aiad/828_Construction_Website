@@ -1,9 +1,11 @@
+import { ADU_FAQS } from "@/lib/service-faqs";
 import type { Metadata } from "next";
 import { SITE } from "@/lib/constants";
 import JsonLd from "@/components/shared/JsonLd";
 import AduServiceContent from "@/components/services/adu/AduServiceContent";
 import {
   breadcrumbJsonLd,
+  faqJsonLd,
   businessProviderJsonLd,
   SEARCH_ROBOTS,
   socialMetadata,
@@ -51,45 +53,6 @@ const serviceJsonLd = {
   image: `${SITE.url}/images/generated/adu-hero-exterior-v4.webp`,
 };
 
-const faqJsonLd = {
-  "@context": "https://schema.org",
-  "@type": "FAQPage",
-  mainEntity: [
-    {
-      "@type": "Question",
-      name: "How much does an ADU cost in Torrance?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "ADU construction costs in Torrance typically range from $150,000 to $350,000 depending on size, design, and finishes. 828 Construction provides detailed estimates after a free consultation.",
-      },
-    },
-    {
-      "@type": "Question",
-      name: "Do I need a permit for an ADU in Torrance?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "Yes, all ADU construction in Torrance requires building permits. 828 Construction manages the permitting process and ensures full compliance with Torrance zoning regulations.",
-      },
-    },
-    {
-      "@type": "Question",
-      name: "How long does it take to build an ADU?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "A typical ADU takes 6–12 months from initial consultation to completion, including design, permitting, and construction.",
-      },
-    },
-    {
-      "@type": "Question",
-      name: "What types of ADUs can be built on my property?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "Depending on your lot and zoning, you may qualify for a detached ADU, an attached ADU, a garage conversion, or a Junior ADU (JADU).",
-      },
-    },
-  ],
-};
-
 const breadcrumbs = breadcrumbJsonLd([
   { name: "Home", path: "" },
   { name: "Services", path: "/services" },
@@ -100,7 +63,7 @@ export default function AduPage() {
   return (
     <>
       <JsonLd data={serviceJsonLd} />
-      <JsonLd data={faqJsonLd} />
+      <JsonLd data={faqJsonLd(ADU_FAQS)} />
       <JsonLd data={breadcrumbs} />
       <AduServiceContent />
     </>

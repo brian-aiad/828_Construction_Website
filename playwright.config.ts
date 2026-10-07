@@ -1,7 +1,9 @@
 import { defineConfig, devices } from "@playwright/test";
+import { randomBytes } from "node:crypto";
 
 const externalBaseURL = process.env.TEST_BASE_URL;
 const baseURL = externalBaseURL || "http://localhost:3011";
+const productionTest = process.env.TEST_PRODUCTION === "1";
 
 export default defineConfig({
   testDir: "./tests",
@@ -43,9 +45,11 @@ export default defineConfig({
   webServer: externalBaseURL
     ? undefined
     : {
-        command: "npx next dev -p 3011",
+        command: productionTest ? "npx next start -p 3011" : "npx next dev -p 3011",
         url: "http://localhost:3011",
-        reuseExistingServer: !process.env.CI,
+        reuseExistingServer: !process.env.CI && !productionTest,
+        // Fresh test-only signing key; production must still supply its own.
+        env: { CONTACT_FORM_SECRET: randomBytes(32).toString("hex") },
         timeout: 120_000,
       },
 });

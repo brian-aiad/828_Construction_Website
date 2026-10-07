@@ -20,7 +20,9 @@
     "preflight": "node scripts/preflight.mjs --fast",
     "preflight:full": "node scripts/preflight.mjs",
     "preflight:desktop": "node scripts/preflight.mjs --fast --desktop",
-    "preflight:mobile": "node scripts/preflight.mjs --fast --mobile"
+    "preflight:mobile": "node scripts/preflight.mjs --fast --mobile",
+    "audit:seo": "node scripts/audit-seo.mjs --start",
+    "test:release": "TEST_PRODUCTION=1 playwright test tests/sitewide-runtime-stability.spec.ts tests/release-hardening.spec.ts tests/contact-form-browser.spec.ts tests/portfolio-production.spec.ts tests/motion-polish.spec.ts --project=chromium --project=webkit --project=firefox --workers=2"
   },
   "dependencies": {
     "@vercel/analytics": "^2.0.1",
@@ -28,7 +30,7 @@
     "gsap": "^3.15.0",
     "lenis": "^1.3.23",
     "lucide-react": "^1.32.0",
-    "next": "^16.3.5",
+    "next": "~16.3.6",
     "react": "19.2.4",
     "react-dom": "19.2.4",
     "split-type": "^0.3.4",
@@ -42,8 +44,8 @@
     "@types/react-dom": "^19",
     "axe-core": "^4.11.3",
     "eslint": "^9",
-    "eslint-config-next": "^16.3.5",
-    "sharp": "^0.35.4",
+    "eslint-config-next": "~16.3.6",
+    "sharp": "^0.35.5",
     "tailwindcss": "^4",
     "tsx": "^4.23.12",
     "typescript": "^5"

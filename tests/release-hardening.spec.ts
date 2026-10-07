@@ -82,7 +82,7 @@ test.describe("release hardening", () => {
       viewport: { width: 1440, height: 900 },
     });
     const page = await context.newPage();
-    await page.goto("/");
+    await page.goto("/", { waitUntil: "domcontentloaded" });
 
     const splash = page.locator(".splash-screen");
     await expect(splash).toHaveAttribute("aria-hidden", "true");

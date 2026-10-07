@@ -13,6 +13,7 @@ import Link from "next/link";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import SplitType from "split-type";
+import { ADU_FAQS as FAQS } from "@/lib/service-faqs";
 import { SITE } from "@/lib/constants";
 import { AnimationController } from "@/utils/animationControl";
 import { revealOnVisible } from "@/utils/revealOnVisible";
@@ -33,25 +34,7 @@ const HERO_PHRASE = "Built with intent";
 const HERO_PARAGRAPH =
   "Whether looking to refine a private retreat, ideal for house guests, accommodating family, or simply expanding the living space while elevating the property's value overall — 828 Construction builds with the same seriousness as a primary home.";
 
-// Answers mirror the FAQ JSON-LD in app/services/adu/page.tsx exactly.
-const FAQS = [
-  {
-    q: "How much does an ADU cost in Torrance?",
-    a: "ADU construction costs in Torrance typically range from $150,000 to $350,000 depending on size, design, and finishes. 828 Construction provides detailed estimates after a free consultation.",
-  },
-  {
-    q: "Do I need a permit for an ADU in Torrance?",
-    a: "Yes, all ADU construction in Torrance requires building permits. 828 Construction manages the permitting process and ensures full compliance with Torrance zoning regulations.",
-  },
-  {
-    q: "How long does it take to build an ADU?",
-    a: "A typical ADU takes 6–12 months from initial consultation to completion, including design, permitting, and construction.",
-  },
-  {
-    q: "What types of ADUs can be built on my property?",
-    a: "Depending on your lot and zoning, you may qualify for a detached ADU, an attached ADU, a garage conversion, or a Junior ADU (JADU).",
-  },
-];
+
 
 // NS Perspectives grammar (Joe's on-screen reference): question cards
 // interleaved with photo cells in a checkerboard.

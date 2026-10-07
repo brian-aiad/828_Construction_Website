@@ -12,6 +12,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { REMEDIATION_FAQS as FAQS } from "@/lib/service-faqs";
 import { SITE } from "@/lib/constants";
 import { AnimationController } from "@/utils/animationControl";
 import { revealOnVisible } from "@/utils/revealOnVisible";
@@ -35,21 +36,7 @@ const HERO_PARAGRAPH =
 const FAQ_INTRO =
   "Mold remediation is necessary when moisture intrusion happens to a structure — whether from a leaky roof, cracked pipes, or old windows. Beyond visible damage, the hidden dangers in mold spores in between materials and long-term exposure may contribute to respiratory issues, allergies, and other health concerns.";
 
-// Answers mirror the FAQ JSON-LD in app/services/remediation/page.tsx exactly.
-const FAQS = [
-  {
-    q: "What causes mold growth?",
-    a: "Mold needs moisture, oxygen, and organic materials to grow. Common causes: poor ventilation, high humidity, and water intrusion or leaks.",
-  },
-  {
-    q: "What is mold remediation?",
-    a: "It is a process of identifying, containing, removing, and preventing mold growth. It includes cleanup, air filtration, and addressing the moisture source.",
-  },
-  {
-    q: "Can mold affect my health?",
-    a: "Yes — exposure may cause coughing, sneezing, headaches, skin irritation, asthma flare-ups, and fatigue, especially in sensitive individuals.",
-  },
-];
+
 
 // Verbatim from Joe's phone notes ("Section 3 process — Remediation: The
 // approach / Build philosophy").

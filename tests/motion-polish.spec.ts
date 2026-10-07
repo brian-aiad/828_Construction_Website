@@ -1,10 +1,11 @@
 import { expect, test } from "@playwright/test";
 
-test("phone entrances animate, settle, and respect a live reduced-motion change", async ({ browser }) => {
+test("phone entrances animate, settle, and respect a live reduced-motion change", async ({ browser, browserName }) => {
   const context = await browser.newContext({
     viewport: { width: 390, height: 844 },
     hasTouch: true,
-    isMobile: true,
+    // Firefox supports touch + narrow viewports, but not mobile emulation.
+    isMobile: browserName !== "firefox",
     reducedMotion: "no-preference",
   });
   const page = await context.newPage();
@@ -54,6 +55,26 @@ test("cursor returns to the native pointer on live motion and viewport changes",
   await page.waitForTimeout(500);
   await page.mouse.move(700, 300);
   await expect(page.locator("body")).toHaveClass(/has-custom-cursor/);
+  // Hover growth must not scale the ring's screen translation away from the dot.
+  const link = page.locator("header a[href='/contact']").first();
+  const box = await link.boundingBox();
+  expect(box).not.toBeNull();
+  const position = { x: box!.x + box!.width / 2, y: box!.y + box!.height / 2 };
+  await page.mouse.move(position.x, position.y);
+  await page.waitForTimeout(250);
+  const cursorBounds = await page.evaluate(() => {
+    const ring = document.querySelector("[data-custom-cursor=ring]")!;
+    return [document.querySelector("[data-custom-cursor=dot]")!, ring.firstElementChild!]
+      .map((element) => {
+        const rect = element.getBoundingClientRect();
+        return { x: rect.x + rect.width / 2, y: rect.y + rect.height / 2, width: rect.width };
+      });
+  });
+  for (const bounds of cursorBounds) {
+    expect(Math.abs(bounds.x - position.x)).toBeLessThan(1);
+    expect(Math.abs(bounds.y - position.y)).toBeLessThan(1);
+  }
+  expect(cursorBounds[1].width).toBeGreaterThan(50);
   await page.emulateMedia({ reducedMotion: "reduce" });
   await expect(page.locator("body")).not.toHaveClass(/has-custom-cursor/);
   await expect(page.locator("[data-custom-cursor=ring]")).toBeHidden();

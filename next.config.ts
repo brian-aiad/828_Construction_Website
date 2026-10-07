@@ -20,6 +20,16 @@ const nextConfig: NextConfig = {
   typescript: { ignoreBuildErrors: true },
   async headers() {
     return [
+      // Keep rendering resources crawlable while excluding them as search pages.
+      // Do not apply this to images or favicons: Google needs those for search.
+      {
+        source: "/:path*\\.woff2",
+        headers: [{ key: "X-Robots-Tag", value: "noindex" }],
+      },
+      {
+        source: "/site.webmanifest",
+        headers: [{ key: "X-Robots-Tag", value: "noindex" }],
+      },
       {
         source: "/:path*",
         headers: [

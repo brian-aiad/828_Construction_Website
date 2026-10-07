@@ -13,7 +13,7 @@ test.describe('HOMEPAGE COMPLETE AUDIT - Every Section', () => {
   });
 
   test.beforeEach(async ({ page }) => {
-    await page.goto('http://localhost:3000');
+    await page.goto('http://localhost:3011');
     await page.setViewportSize({ width: 1920, height: 1080 });
     await page.waitForLoadState('networkidle');
     await page.waitForTimeout(1500); // let animations settle
@@ -159,7 +159,7 @@ test.describe('HOMEPAGE COMPLETE AUDIT - Every Section', () => {
   // MOBILE CHECK
   test('09 Mobile Viewport Check', async ({ page }) => {
     await page.setViewportSize({ width: 375, height: 667 });
-    await page.goto('http://localhost:3000');
+    await page.goto('http://localhost:3011');
     await page.waitForLoadState('networkidle');
 
     await page.screenshot({ path: path.join(screenshotsDir, '09-mobile-hero.png') });

@@ -1,6 +1,6 @@
 import { test, expect, Page } from "@playwright/test";
 
-const BASE = process.env.TEST_BASE_URL || "http://localhost:4000";
+const BASE = process.env.TEST_BASE_URL || "http://localhost:3011";
 const ALL_ROUTES = ["/", "/about", "/services", "/services/adu", "/services/remediation", "/services/consulting", "/process", "/projects", "/contact"];
 
 // ── Helper: collect console errors during a page interaction ─────────────────

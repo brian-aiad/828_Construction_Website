@@ -12,7 +12,7 @@ test.beforeAll(() => {
 
 test("capture full homepage before", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
-  await page.goto("http://localhost:3000");
+  await page.goto("http://localhost:3011");
   await page.waitForLoadState("networkidle");
   await page.waitForTimeout(1500);
 

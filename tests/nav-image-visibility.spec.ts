@@ -15,7 +15,7 @@
  */
 import { test, expect, type Locator, type Page } from "@playwright/test";
 
-const BASE = process.env.TEST_BASE_URL || "http://localhost:3000";
+const BASE = process.env.TEST_BASE_URL || "http://localhost:3011";
 
 const NAV_PAIRS: [string, string, string, string][] = [
   ["/", "home", "/about", "about"],

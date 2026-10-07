@@ -18,7 +18,7 @@ test.describe('HOMEPAGE ANIMATION QUALITY AUDIT', () => {
 
   test('Desktop 1920: Full page scroll — capture every section', async ({ page }) => {
     await page.setViewportSize({ width: 1920, height: 1080 });
-    await page.goto('http://localhost:3000');
+    await page.goto('http://localhost:3011');
     await page.waitForLoadState('networkidle');
     await page.waitForTimeout(2000); // hero entrance animations complete
 
@@ -49,7 +49,7 @@ test.describe('HOMEPAGE ANIMATION QUALITY AUDIT', () => {
 
   test('Header: no timer, logo visible, CTA present', async ({ page }) => {
     await page.setViewportSize({ width: 1920, height: 1080 });
-    await page.goto('http://localhost:3000');
+    await page.goto('http://localhost:3011');
     await page.waitForLoadState('networkidle');
 
     // No live clock
@@ -72,7 +72,7 @@ test.describe('HOMEPAGE ANIMATION QUALITY AUDIT', () => {
 
   test('Hero: headline readable after animations settle', async ({ page }) => {
     await page.setViewportSize({ width: 1920, height: 1080 });
-    await page.goto('http://localhost:3000');
+    await page.goto('http://localhost:3011');
     await page.waitForLoadState('networkidle');
     await page.waitForTimeout(2500); // wait for Framer Motion entrance
 
@@ -88,7 +88,7 @@ test.describe('HOMEPAGE ANIMATION QUALITY AUDIT', () => {
 
   test('Services: 3 image cards in asymmetric grid', async ({ page }) => {
     await page.setViewportSize({ width: 1920, height: 1080 });
-    await page.goto('http://localhost:3000');
+    await page.goto('http://localhost:3011');
     await page.waitForLoadState('networkidle');
     await page.evaluate(() => window.scrollTo(0, 2200));
     await page.waitForTimeout(1500);
@@ -108,7 +108,7 @@ test.describe('HOMEPAGE ANIMATION QUALITY AUDIT', () => {
 
   test('About: images and stats present (not a text wall)', async ({ page }) => {
     await page.setViewportSize({ width: 1920, height: 1080 });
-    await page.goto('http://localhost:3000');
+    await page.goto('http://localhost:3011');
     await page.waitForLoadState('networkidle');
     await page.evaluate(() => window.scrollTo(0, 3200));
     await page.waitForTimeout(1800); // wait for clip-path reveals + counters
@@ -125,7 +125,7 @@ test.describe('HOMEPAGE ANIMATION QUALITY AUDIT', () => {
 
   test('CTA: updated label, no "Ready to Start?" AI slop', async ({ page }) => {
     await page.setViewportSize({ width: 1920, height: 1080 });
-    await page.goto('http://localhost:3000');
+    await page.goto('http://localhost:3011');
     await page.waitForLoadState('networkidle');
     await page.evaluate(() => window.scrollTo(0, 9999));
     await page.waitForTimeout(1500);
@@ -147,7 +147,7 @@ test.describe('HOMEPAGE ANIMATION QUALITY AUDIT', () => {
 
   test('Mobile 375: hero readable, nav collapses', async ({ page }) => {
     await page.setViewportSize({ width: 375, height: 667 });
-    await page.goto('http://localhost:3000');
+    await page.goto('http://localhost:3011');
     await page.waitForLoadState('networkidle');
     await page.waitForTimeout(1500);
 
@@ -171,7 +171,7 @@ test.describe('HOMEPAGE ANIMATION QUALITY AUDIT', () => {
 
   test('Building Science: pillar rows and numbered elements present', async ({ page }) => {
     await page.setViewportSize({ width: 1920, height: 1080 });
-    await page.goto('http://localhost:3000');
+    await page.goto('http://localhost:3011');
     await page.waitForLoadState('networkidle');
     await page.evaluate(() => window.scrollTo(0, 6500));
     await page.waitForTimeout(2000);
