@@ -11,6 +11,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { COARSE_TABLET_QUERY } from "@/utils/animationControl";
 import ContactForm from "@/components/contact/ContactForm";
 import ContactFlow from "@/components/contact/ContactFlow";
 import { revealOnVisible } from "@/utils/revealOnVisible";
@@ -608,7 +609,7 @@ function useTravelIndex(
   useEffect(() => {
     const desktopQuery = window.matchMedia("(min-width: 1280px)");
     const coarseTabletQuery = window.matchMedia(
-      "(pointer: coarse) and (max-width: 1366px)"
+      COARSE_TABLET_QUERY
     );
     const reducedMotionQuery = window.matchMedia(
       "(prefers-reduced-motion: reduce)"
@@ -616,11 +617,8 @@ function useTravelIndex(
     let raf = 0;
     const measure = () => {
       raf = 0;
-      if (
-        desktopQuery.matches &&
-        !coarseTabletQuery.matches &&
-        !reducedMotionQuery.matches
-      ) {
+      const panel = wrapRef.current?.firstElementChild;
+      if (panel && getComputedStyle(panel).position === "sticky") {
         const wrap = wrapRef.current;
         if (!wrap) return;
         const runway = wrap.offsetHeight - window.innerHeight;

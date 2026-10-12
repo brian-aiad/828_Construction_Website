@@ -99,13 +99,8 @@ const STAGES = [
   "Post Construction",
 ];
 
-// Index walk driver. Desktop (xl+): the index panel is CSS-sticky over a tall
-// runway and the active service is a pure function of scroll progress —
-// runway/3 of dedicated scroll per service. Deterministic math (no rect
-// feedback from the expanding stages), so the walk cannot skip, rush, or
-// flicker: bulletproof per Brian 2026-07-09. Below xl there is no pin (mobile
-// scroll philosophy) — the active row is the last title past the focus line
-// (monotone, reflow-immune), with a top-of-page guard so the list opens on ADU.
+// CSS owns the pinning contract. Read the same flag for scroll progress so
+// width, height, pointer and motion changes cannot leave a half-pinned layout.
 function useTravelIndex(
   wrapRef: React.RefObject<HTMLElement | null>,
   rowRefs: React.MutableRefObject<Array<HTMLElement | null>>,
@@ -113,16 +108,13 @@ function useTravelIndex(
 ) {
   const [active, setActive] = useState(0);
   useEffect(() => {
-    const desktopQuery = window.matchMedia("(min-width: 1280px)");
-    const coarseTabletQuery = window.matchMedia(
-      "(pointer: coarse) and (max-width: 1366px)"
-    );
+    const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
     let raf = 0;
     const measure = () => {
       raf = 0;
-      if (desktopQuery.matches && !coarseTabletQuery.matches) {
-        const wrap = wrapRef.current;
-        if (!wrap) return;
+      const wrap = wrapRef.current;
+      if (!wrap) return;
+      if (getComputedStyle(wrap).getPropertyValue("--svc-travel-pinned").trim() === "1") {
         const runway = wrap.offsetHeight - window.innerHeight;
         if (runway <= 0) {
           setActive(0);
@@ -154,8 +146,7 @@ function useTravelIndex(
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onScroll, { passive: true });
     window.addEventListener("load", onScroll, { passive: true });
-    desktopQuery.addEventListener("change", onScroll);
-    coarseTabletQuery.addEventListener("change", onScroll);
+    motionQuery.addEventListener("change", onScroll);
     if (typeof document !== "undefined" && "fonts" in document) {
       document.fonts.ready.then(() => onScroll()).catch(() => {});
     }
@@ -163,8 +154,7 @@ function useTravelIndex(
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onScroll);
       window.removeEventListener("load", onScroll);
-      desktopQuery.removeEventListener("change", onScroll);
-      coarseTabletQuery.removeEventListener("change", onScroll);
+      motionQuery.removeEventListener("change", onScroll);
       if (raf) cancelAnimationFrame(raf);
     };
   }, [wrapRef, rowRefs, count]);
@@ -394,10 +384,10 @@ function ServicesIndex() {
       ref={wrapRef}
       data-section="services-index"
       data-header-light=""
-      className="motion-runway relative bg-[#f7f7f3] text-[#141414] lg:h-[calc(100svh+210vh)]"
+      className="svc-travel relative bg-[#f7f7f3] text-[#141414]"
       style={{ overflowX: "clip" }}
     >
-      <div className="lg:sticky lg:top-0 lg:h-svh lg:overflow-hidden">
+      <div className="svc-travel-panel">
         <div className="mx-auto max-w-7xl px-6 pb-16 pt-20 lg:px-12 lg:pb-0 lg:pt-[6.75rem]">
           <div className="flex items-center justify-between gap-6 border-b border-black/12 pb-6 lg:pb-7">
             <h1 className="font-labels text-[10px] uppercase tracking-[0.24em] text-black/65">
@@ -455,18 +445,15 @@ function ServicesIndex() {
                       reserve stable image space so scroll-triggered row changes
                       cannot move surrounding content. */}
                   <div
-                    className={`svc-row-stage grid max-xl:grid-rows-[1fr] ${
-                      open
-                        ? "xl:grid-rows-[1fr]"
-                        : "xl:grid-rows-[0fr]"
-                    }`}
+                    className="svc-row-stage grid"
+                    data-active={open}
                     style={{
                       transition:
                         "grid-template-rows 360ms cubic-bezier(0.16,1,0.3,1)",
                     }}
                   >
                     <div className="min-h-0 overflow-hidden">
-                      <div className="relative -mt-2 mb-6 h-[42svh] overflow-hidden lg:mb-4 lg:h-[calc(100svh-36.25rem)] lg:min-h-[12rem]">
+                      <div className="svc-row-image relative mb-6 h-[42svh] overflow-hidden">
                         <Image
                           src={row.image}
                           alt={`${service.title} by 828 Construction`}
@@ -598,10 +585,10 @@ function PrinciplesSection() {
       data-section="services-principles"
       data-flow-rail-pause=""
       data-header-dark=""
-      className="motion-runway relative bg-[#0a0a0a] text-white max-xl:flex max-xl:min-h-svh max-xl:flex-col max-xl:justify-center lg:h-[calc(100svh+240vh)]"
+      className="svc-travel relative bg-[#0a0a0a] text-white"
       style={{ overflowX: "clip" }}
     >
-      <div className="lg:sticky lg:top-0 lg:h-svh lg:overflow-hidden">
+      <div className="svc-travel-panel">
       <div className="grid grid-cols-1 lg:h-full lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
         {/* Close-up plate — photographer close-ups, per Joe: one per principle.
             All four stack as persistent opacity layers and crossfade as their

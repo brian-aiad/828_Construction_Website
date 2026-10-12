@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { COARSE_TABLET_QUERY, DESKTOP_MOTION_QUERY } from "@/utils/animationControl";
 import { SITE } from "@/lib/constants";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -31,8 +32,8 @@ export default function HeroV2() {
     const media = gsap.matchMedia();
     media.add(
       {
-        desktop: "(min-width: 1024px)",
-        coarseTablet: "(pointer: coarse) and (max-width: 1366px)",
+        desktop: DESKTOP_MOTION_QUERY,
+        coarseTablet: COARSE_TABLET_QUERY,
         reducedMotion: "(prefers-reduced-motion: reduce)",
       },
       (context) => {

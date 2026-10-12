@@ -8,7 +8,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import SplitType from "split-type";
 import { PROCESS_STEPS_V2, SITE } from "@/lib/constants";
 import { lqip } from "@/lib/image-placeholders";
-import { AnimationController } from "@/utils/animationControl";
+import { AnimationController, COARSE_TABLET_QUERY } from "@/utils/animationControl";
 import { revealOnVisible } from "@/utils/revealOnVisible";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -206,7 +206,7 @@ export default function HomeVisionSequence({
         const count = processRows.length;
         const desktopQuery = window.matchMedia("(min-width: 1280px)");
         const coarseTabletQuery = window.matchMedia(
-          "(pointer: coarse) and (max-width: 1366px)"
+          COARSE_TABLET_QUERY
         );
         const setActive = (idx: number) => {
           processRows.forEach((row, i) =>
@@ -222,7 +222,7 @@ export default function HomeVisionSequence({
         const updateActive = () => {
           let idx: number;
           let railP: number;
-          if (desktopQuery.matches && !coarseTabletQuery.matches && travelEl) {
+          if (travelEl?.firstElementChild && getComputedStyle(travelEl.firstElementChild).position === "sticky") {
             const runway = travelEl.offsetHeight - window.innerHeight;
             if (runway <= 0) {
               idx = 0;

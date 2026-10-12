@@ -16,6 +16,9 @@ const VIEWPORTS = [
   { label: "small-mobile", width: 320, height: 568 },
   { label: "iphone", width: 390, height: 844 },
   { label: "tablet", width: 820, height: 1180 },
+  { label: "compact-desktop", width: 1100, height: 800 },
+  { label: "short-desktop", width: 1440, height: 650 },
+  { label: "landscape-phone", width: 844, height: 390 },
   { label: "desktop", width: 1440, height: 900 },
 ];
 
@@ -117,6 +120,41 @@ for (const viewport of VIEWPORTS) {
         expect(pageErrors, `${route} page errors`).toEqual([]);
         expect(consoleErrors, `${route} console errors`).toEqual([]);
         expect(failedResources, `${route} failed same-origin resources`).toEqual([]);
+
+        // Breakpoint regressions can keep a panel pinned while expanding all
+        // photos inside its clipped viewport. Exercise every service, not just
+        // the page midpoint, and prove the active image is actually painted.
+        if (route === "/services") {
+          // Return to the document start before using element geometry: a
+          // covered sticky ancestor has viewport-relative bounds at the footer.
+          await page.evaluate(() => window.scrollTo({ top: 0, behavior: "instant" }));
+          await expect.poll(() => page.evaluate(() => scrollY)).toBe(0);
+          const index = page.locator('[data-section="services-index"]');
+          const pinned = await index.evaluate((el) =>
+            getComputedStyle(el.firstElementChild!).position === "sticky"
+          );
+          for (let service = 0; service < 3; service++) {
+            const stage = page.locator(".svc-row-stage").nth(service);
+            if (pinned) {
+              await index.evaluate((el, step) => {
+                window.scrollTo({
+                  top: (el.clientHeight - innerHeight) * (step + 0.4) / 3,
+                  behavior: "instant",
+                });
+              }, service);
+              await expect(stage).toHaveAttribute("data-active", "true");
+            } else {
+              await stage.scrollIntoViewIfNeeded();
+            }
+            await expect.poll(() => stage.evaluate((el) => {
+              const rect = el.getBoundingClientRect();
+              const x = rect.left + rect.width / 2;
+              const y = Math.max(80, Math.min(innerHeight - 1, rect.top + rect.height / 2));
+              return rect.height > 100 && el.contains(document.elementFromPoint(x, y));
+            }), { message: `Service ${service + 1} must be visible and reachable` }).toBe(true);
+          }
+        }
+
       });
     }
   });

@@ -137,11 +137,11 @@ body {
   }
 }
 
-/* Tablet/mobile motion contract: below desktop-class width, or on iPad-like
-   coarse-pointer screens, pages must read as natural scroll. Tailwind's lg
+/* Compact motion contract: narrow/short windows and iPad-like
+   coarse-pointer screens use natural scroll (see DESKTOP_MOTION_QUERY). Tailwind's lg
    utilities start at 1024px, which includes iPad landscape, so override the
    sticky/viewport/clip pieces there while leaving desktop motion untouched. */
-@media (max-width: 1023px), (pointer: coarse) and (max-width: 1366px) {
+@media (max-width: 1023px), (max-height: 799px), (pointer: coarse) {
   .lg\:sticky,
   .xl\:sticky {
     position: relative !important;
@@ -229,7 +229,7 @@ body {
   }
 }
 
-@media (min-width: 1024px) and (pointer: fine) {
+@media (min-width: 1024px) and (min-height: 800px) and (pointer: fine) {
   [data-stack-surface]:not([data-stack-compact]) {
     min-height: 100svh;
   }
@@ -975,3 +975,51 @@ html.lenis body {
 /* Flow pages render a 100svh footer runway while their final surface is sticky.
    The footer covers the viewport below the fixed desktop header; its black
    lead band is independently capped so tall screens do not create dead space. */
+
+/* Service travel has one geometry contract, shared with useTravelIndex.
+   A compact desktop still gets the full sequence; short/touch viewports keep
+   every photo in flow rather than clipping rows inside a viewport-sized box. */
+.svc-travel { --svc-travel-pinned: 0; }
+.svc-travel-panel { position: relative; }
+.svc-row-stage { grid-template-rows: 1fr; }
+
+@media (min-width: 1024px) and (min-height: 700px) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  [data-section="services-index"] { --svc-travel-pinned: 1; height: 310svh; }
+  [data-section="services-index"] > .svc-travel-panel {
+    position: sticky; top: 0; height: 100svh; overflow: hidden;
+  }
+  .svc-row-stage { grid-template-rows: 0fr; }
+  .svc-row-stage[data-active="true"] { grid-template-rows: 1fr; }
+  .svc-row-image { height: max(12rem, calc(100svh - 36.25rem)); margin-bottom: 1rem; }
+}
+
+/* The values panel needs more vertical reading room than the service index. */
+@media (min-width: 1024px) and (min-height: 900px) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  [data-section="services-principles"] { --svc-travel-pinned: 1; height: 340svh; }
+  [data-section="services-principles"] > .svc-travel-panel {
+    position: sticky; top: 0; height: 100svh; overflow: hidden;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .svc-travel *, .svc-travel *::before, .svc-travel *::after {
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Dense pinned panels need vertical room as well as desktop width. This also
+   covers landscape phones, browser zoom, and short split-screen windows. */
+@media (max-height: 799px), (prefers-reduced-motion: reduce) {
+  .motion-runway, .process-travel {
+    height: auto !important;
+    min-height: 100svh;
+  }
+  .motion-runway > .lg\:sticky,
+  .motion-runway > .xl\:sticky,
+  .process-travel > .xl\:sticky {
+    position: relative !important;
+    top: auto !important;
+    height: auto !important;
+    overflow: visible !important;
+  }
+}

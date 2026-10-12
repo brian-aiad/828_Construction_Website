@@ -1,10 +1,18 @@
 import type { NextConfig } from "next";
+import { networkInterfaces } from "node:os";
 
 const nextConfig: NextConfig = {
   poweredByHeader: false,
   // Allow the LAN preview URL printed by `npm run dev`. Without this, Next
   // blocks client chunks and the animated header remains off-screen.
-  allowedDevOrigins: ["10.0.0.44", "127.0.0.1"],
+  allowedDevOrigins: [
+    "127.0.0.1",
+    ...Object.values(networkInterfaces()).flatMap((interfaces) =>
+      (interfaces ?? [])
+        .filter((network) => network.family === "IPv4" && !network.internal)
+        .map((network) => network.address)
+    ),
+  ],
   // Dev server writes to .next-dev so `next build` / preflight / deploy runs
   // (which wipe .next) can never corrupt a running `npm run dev` on :3001.
   distDir: process.env.NODE_ENV === "development" ? ".next-dev" : ".next",

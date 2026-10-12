@@ -14,7 +14,7 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { REMEDIATION_FAQS as FAQS } from "@/lib/service-faqs";
 import { SITE } from "@/lib/constants";
-import { AnimationController } from "@/utils/animationControl";
+import { AnimationController, COARSE_TABLET_QUERY } from "@/utils/animationControl";
 import { revealOnVisible } from "@/utils/revealOnVisible";
 import RemediationFlow from "@/components/services/remediation/RemediationFlow";
 
@@ -128,14 +128,15 @@ function useStepWalk(
   useEffect(() => {
     const desktopQuery = window.matchMedia("(min-width: 1280px)");
     const coarseTabletQuery = window.matchMedia(
-      "(pointer: coarse) and (max-width: 1366px)"
+      COARSE_TABLET_QUERY
     );
+    const reducedMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
     let raf = 0;
     const measure = () => {
       raf = 0;
       const wrap = wrapRef.current;
       if (!wrap) return;
-      if (desktopQuery.matches && !coarseTabletQuery.matches) {
+      if (wrap.firstElementChild && getComputedStyle(wrap.firstElementChild).position === "sticky") {
         const runway = wrap.offsetHeight - window.innerHeight;
         if (runway <= 0) {
           setActive(0);
@@ -166,6 +167,7 @@ function useStepWalk(
     measure();
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onScroll, { passive: true });
+    reducedMotionQuery.addEventListener("change", onScroll);
     desktopQuery.addEventListener("change", onScroll);
     coarseTabletQuery.addEventListener("change", onScroll);
     if (typeof document !== "undefined" && "fonts" in document) {
@@ -174,6 +176,7 @@ function useStepWalk(
     return () => {
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onScroll);
+      reducedMotionQuery.removeEventListener("change", onScroll);
       desktopQuery.removeEventListener("change", onScroll);
       coarseTabletQuery.removeEventListener("change", onScroll);
       if (raf) cancelAnimationFrame(raf);

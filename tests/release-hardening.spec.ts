@@ -129,7 +129,7 @@ test.describe("release hardening", () => {
 
   for (const route of ["/services/adu", "/services/remediation"]) {
     test(`${route} FAQ hides collapsed answers and exposes the expanded panel`, async ({ page }) => {
-      await page.goto(route);
+      await page.goto(route, { waitUntil: "domcontentloaded" });
       const section = page.locator(
         route.endsWith("adu") ? '[data-section="adu-faq"]' : '[data-section="rem-faq"]'
       );
@@ -211,7 +211,7 @@ test.describe("release hardening", () => {
     });
     const page = await context.newPage();
     await page.addInitScript(() => sessionStorage.setItem("828:splash-seen", "1"));
-    await page.goto("/");
+    await page.goto("/", { waitUntil: "domcontentloaded" });
     await page.evaluate(() => window.scrollTo(0, window.innerHeight * 0.7));
     await page.waitForTimeout(500);
 
@@ -247,7 +247,7 @@ test.describe("release hardening", () => {
     await page.setViewportSize({ width: 390, height: 844 });
 
     for (const route of publicRoutes) {
-      await page.goto(route);
+      await page.goto(route, { waitUntil: "domcontentloaded" });
       await expect(page.locator("main h1").first()).toBeVisible();
       const health = await page.evaluate(() => ({
         overflow: document.documentElement.scrollWidth > document.documentElement.clientWidth + 2,
@@ -283,7 +283,7 @@ test.describe("release hardening", () => {
     const internalPaths = new Set<string>();
 
     for (const route of publicRoutes) {
-      const response = await page.goto(route);
+      const response = await page.goto(route, { waitUntil: "domcontentloaded" });
       expect(response?.status(), route).toBe(200);
       const title = await page.title();
       expect(title, route).toBeTruthy();

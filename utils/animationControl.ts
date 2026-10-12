@@ -1,16 +1,17 @@
 /**
  * AnimationController
  * Three-layer detection:
- *   1. Screen width < 1024 → compact layout (no scroll-hijacking)
- *   2. Coarse pointer at <= 1366px → iPad/tablet class (normal scroll)
+ *   1. Screen width < 1024 or height < 800 → compact layout (native scrolling)
+ *   2. Coarse primary pointer → touch device (normal scroll)
  *   3. prefers-reduced-motion → user preference
  *
  * NOTE: We still avoid raw navigator.maxTouchPoints / ontouchstart. Some
  * Windows laptops report touch support while users operate them as desktop
  * machines. Pointer media queries are a better signal for tablet ergonomics.
  */
-export const DESKTOP_MOTION_QUERY = "(min-width: 1024px)";
-export const COARSE_TABLET_QUERY = "(pointer: coarse) and (max-width: 1366px)";
+// Keep the compact-flow media query in app/globals.css in sync.
+export const DESKTOP_MOTION_QUERY = "(min-width: 1024px) and (min-height: 800px)";
+export const COARSE_TABLET_QUERY = "(pointer: coarse)";
 
 export class AnimationController {
   private static _instance: AnimationController | null = null;
@@ -40,7 +41,7 @@ export class AnimationController {
   };
 
   private _syncFromMedia() {
-    const isDesktopWidth = this._desktopQuery?.matches ?? window.innerWidth >= 1024;
+    const isDesktopWidth = this._desktopQuery?.matches ?? (window.innerWidth >= 1024 && window.innerHeight >= 800);
     const isCoarseTablet = this._coarseTabletQuery?.matches ?? false;
     this._isMobile = !isDesktopWidth || isCoarseTablet;
     this._prefersReducedMotion = this._reducedMotionQuery?.matches ?? false;
