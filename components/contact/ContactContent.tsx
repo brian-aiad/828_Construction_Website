@@ -422,21 +422,17 @@ function GetInTouch() {
             className="ct-form-card relative overflow-hidden border border-white/16 bg-[#0b0b0b] p-5 text-white shadow-[0_28px_80px_rgba(0,0,0,0.38)] sm:p-8 lg:p-10"
           >
             <div className="absolute inset-x-0 top-0 h-1 bg-[var(--color-accent)]" aria-hidden="true" />
-            <div className="mb-6 flex items-start justify-between gap-5 border-b border-white/14 pb-6 sm:mb-8 sm:pb-7">
+            <div className="mb-6 border-b border-white/14 pb-6 sm:mb-8 sm:pb-7">
               <div>
                 <span className="font-labels text-[9px] uppercase tracking-[0.22em] text-[#d99a93]">
-                  Project brief / Start here
+                  Start your project
                 </span>
                 <h3 className="mt-3 max-w-md font-display text-[clamp(1.65rem,3vw,2.35rem)] font-normal leading-[1.05] tracking-[-0.02em] text-white">
                   Tell us what you’re planning.
                 </h3>
                 <p className="mt-3 max-w-md text-sm leading-6 text-white/64">
-                  Four essentials are enough to start a useful conversation.
+                  A few details to get started. Takes about two minutes.
                 </p>
-              </div>
-              <div className="hidden shrink-0 text-right sm:block">
-                <span className="block font-numbers text-2xl font-bold leading-none text-white">02</span>
-                <span className="mt-2 block font-labels text-[8px] uppercase tracking-[0.16em] text-white/58">Minutes, typically</span>
               </div>
             </div>
             <ContactForm />

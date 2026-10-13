@@ -28,6 +28,31 @@ async function fillMainForm(page: Page) {
 }
 
 test.describe("contact form browser hardening", () => {
+  test("service choices fit their form column at phone, tablet, and desktop widths", async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await page.addInitScript(() => sessionStorage.setItem("828:splash-seen", "1"));
+    await mockChallenge(page);
+    await page.goto("/contact", { waitUntil: "domcontentloaded" });
+    for (const width of [320, 390, 768, 1100, 1440]) {
+      await page.setViewportSize({ width, height: 900 });
+      const choices = page.locator('label[for^="cf-service-"]');
+      await expect(choices).toHaveCount(4);
+      await expect.poll(() => choices.evaluateAll((labels) => {
+        const heights = labels.map((label) => label.getBoundingClientRect().height);
+        return Math.max(...heights) - Math.min(...heights) < 1 && labels.every((label) => {
+          const box = label.getBoundingClientRect();
+          return [...label.querySelectorAll("span")].every((text) => {
+            const range = document.createRange();
+            range.selectNodeContents(text);
+            return [...range.getClientRects()].every((rect) => rect.left >= box.left && rect.right <= box.right);
+          });
+        });
+      }), { message: `Service labels must fit equal-height cards at ${width}px` }).toBe(true);
+      await page.getByRole("radio", { name: /Remediation Diagnose and repair/i }).check();
+      await expect(page.getByRole("radio", { name: /Remediation Diagnose and repair/i })).toBeChecked();
+    }
+  });
+
   test("desktop form remains clickable, validates, debounces, and confirms a reference", async ({
     page,
   }) => {

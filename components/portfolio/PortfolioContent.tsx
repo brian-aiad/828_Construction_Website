@@ -1,5 +1,7 @@
 "use client";
 
+import { useHydrated } from "@/utils/useHydrated";
+
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import Image from "next/image";
@@ -134,6 +136,7 @@ function CaseTile({
   lead?: boolean;
   onOpen: (src: string) => void;
 }) {
+  const hydrated = useHydrated();
   const fallbackTone = dark
     ? "bg-[linear-gradient(135deg,#171313,#070707_56%,rgba(99,26,22,0.28))]"
     : "bg-[linear-gradient(135deg,#efe7dc,#d8cab8_56%,rgba(99,26,22,0.16))]";
@@ -144,6 +147,7 @@ function CaseTile({
     <button
       type="button"
       data-lead-parallax={lead ? "" : undefined}
+      disabled={!hydrated}
       onClick={(event) => {
         event.currentTarget.focus({ preventScroll: true });
         onOpen(src);

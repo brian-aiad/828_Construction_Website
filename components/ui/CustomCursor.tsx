@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { COARSE_TABLET_QUERY, DESKTOP_MOTION_QUERY } from "@/utils/animationControl";
 
 // Position the dot and ring together. Hover scaling belongs to an inner element:
@@ -9,7 +9,6 @@ export default function CustomCursor() {
   const dotRef = useRef<HTMLDivElement>(null);
   const ringRef = useRef<HTMLDivElement>(null);
   const ringShapeRef = useRef<HTMLDivElement>(null);
-  const [enabled, setEnabled] = useState(false);
 
   useEffect(() => {
     const queries = [
@@ -18,15 +17,8 @@ export default function CustomCursor() {
       window.matchMedia(COARSE_TABLET_QUERY),
       window.matchMedia("(prefers-reduced-motion: reduce)"),
     ];
-    const sync = () => setEnabled(queries[0].matches && queries[1].matches && !queries[2].matches && !queries[3].matches);
-    sync();
-    queries.forEach((query) => query.addEventListener("change", sync));
-    return () => queries.forEach((query) => query.removeEventListener("change", sync));
-  }, []);
-
-  useEffect(() => {
+    const isEnabled = () => queries[0].matches && queries[1].matches && !queries[2].matches && !queries[3].matches;
     document.body.classList.remove("has-custom-cursor");
-    if (!enabled) return;
     const dot = dotRef.current;
     const ring = ringRef.current;
     const shape = ringShapeRef.current;
@@ -46,7 +38,7 @@ export default function CustomCursor() {
     };
     const handleMove = (event: PointerEvent) => {
       // Touch or pen input on a hybrid device should retain native behavior.
-      if (event.pointerType !== "mouse") {
+      if (!isEnabled() || event.pointerType !== "mouse") {
         hideCursor();
         return;
       }
@@ -59,7 +51,9 @@ export default function CustomCursor() {
       ring.style.display = "block";
       document.body.classList.add("has-custom-cursor");
     };
-    const handleOver = (event: PointerEvent) => updateHover(event.target);
+    const handleOver = (event: PointerEvent) => {
+      if (isEnabled()) updateHover(event.target);
+    };
     const handleOut = (event: PointerEvent) => {
       if (!event.relatedTarget) hideCursor();
       else updateHover(event.relatedTarget);
@@ -67,6 +61,10 @@ export default function CustomCursor() {
     const onVisibility = () => {
       if (document.hidden) hideCursor();
     };
+    // Keep input listeners attached across media changes. A pointer move must
+    // not be lost between a media event and React committing another effect.
+    const sync = () => { if (!isEnabled()) hideCursor(); };
+    queries.forEach((query) => query.addEventListener("change", sync));
     window.addEventListener("pointermove", handleMove, { passive: true });
     document.addEventListener("pointerover", handleOver, { passive: true });
     document.addEventListener("pointerout", handleOut, { passive: true });
@@ -75,6 +73,7 @@ export default function CustomCursor() {
     document.addEventListener("visibilitychange", onVisibility);
     return () => {
       hideCursor();
+      queries.forEach((query) => query.removeEventListener("change", sync));
       window.removeEventListener("pointermove", handleMove);
       document.removeEventListener("pointerover", handleOver);
       document.removeEventListener("pointerout", handleOut);
@@ -82,7 +81,7 @@ export default function CustomCursor() {
       window.removeEventListener("blur", hideCursor);
       document.removeEventListener("visibilitychange", onVisibility);
     };
-  }, [enabled]);
+  }, []);
 
   return (
     <>

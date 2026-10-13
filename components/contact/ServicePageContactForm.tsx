@@ -1,5 +1,7 @@
 "use client";
 
+import { useHydrated } from "@/utils/useHydrated";
+
 import { useState, useRef } from "react";
 import { SITE } from "@/lib/constants";
 import { useContactSubmission } from "@/components/contact/useContactSubmission";
@@ -45,6 +47,7 @@ function CheckmarkSVG() {
 }
 
 export default function ServicePageContactForm({ serviceTitle }: Props) {
+  const hydrated = useHydrated();
   const [state, setState] = useState<FormState>("idle");
   const [errorMsg, setErrorMsg] = useState("");
   const [validationMsg, setValidationMsg] = useState("");
@@ -247,7 +250,7 @@ export default function ServicePageContactForm({ serviceTitle }: Props) {
 
       <button
         type="submit"
-        disabled={state === "loading"}
+        disabled={!hydrated || state === "loading"}
         className="w-full border border-[var(--color-accent)] text-white py-4 font-labels text-[10px] tracking-[0.22em] uppercase hover:bg-[var(--color-accent)] transition-colors duration-300 disabled:opacity-50 disabled:cursor-not-allowed group flex items-center justify-center gap-2"
       >
         {state === "loading" ? (

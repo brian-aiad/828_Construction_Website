@@ -290,6 +290,12 @@ export function useJunctionSettle(
       armed = true;
     };
     const onKeydown = (e: KeyboardEvent) => {
+      if (e.key === "Tab") {
+        armed = false;
+        clearTimeout(idleTimer);
+        cancelGlide();
+        return;
+      }
       if (SCROLL_KEYS.has(e.key)) arm();
     };
 

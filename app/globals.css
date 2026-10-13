@@ -137,11 +137,11 @@ body {
   }
 }
 
-/* Compact motion contract: narrow/short windows and iPad-like
-   coarse-pointer screens use natural scroll (see DESKTOP_MOTION_QUERY). Tailwind's lg
+/* Compact motion contract: narrow/short windows and touch or pointer-less
+   screens use natural scroll (see DESKTOP_MOTION_QUERY). Tailwind's lg
    utilities start at 1024px, which includes iPad landscape, so override the
    sticky/viewport/clip pieces there while leaving desktop motion untouched. */
-@media (max-width: 1023px), (max-height: 799px), (pointer: coarse) {
+@media (max-width: 1023px), (max-height: 799px), (pointer: coarse), (pointer: none) {
   .lg\:sticky,
   .xl\:sticky {
     position: relative !important;

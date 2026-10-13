@@ -22,7 +22,7 @@
     "preflight:desktop": "node scripts/preflight.mjs --fast --desktop",
     "preflight:mobile": "node scripts/preflight.mjs --fast --mobile",
     "audit:seo": "node scripts/audit-seo.mjs --start",
-    "test:release": "TEST_PRODUCTION=1 playwright test tests/sitewide-runtime-stability.spec.ts tests/release-hardening.spec.ts tests/contact-form-browser.spec.ts tests/portfolio-production.spec.ts tests/motion-polish.spec.ts --project=chromium --project=webkit --project=firefox --workers=2"
+    "test:release": "TEST_PRODUCTION=1 playwright test tests/sitewide-runtime-stability.spec.ts tests/release-hardening.spec.ts tests/contact-form-browser.spec.ts tests/portfolio-production.spec.ts tests/motion-polish.spec.ts --project=chromium --project=webkit --project=firefox --project=firefox-no-pointer --workers=2"
   },
   "dependencies": {
     "@vercel/analytics": "^2.0.1",

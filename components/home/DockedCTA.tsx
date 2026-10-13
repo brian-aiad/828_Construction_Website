@@ -45,6 +45,9 @@ export default function DockedCTA() {
 
   return (
     <div
+      data-docked-cta=""
+      inert={!visible}
+      aria-hidden={!visible}
       className={`fixed bottom-6 left-6 z-40 hidden transition-all duration-500 lg:block ${
         visible
           ? "pointer-events-auto translate-y-0 opacity-100"

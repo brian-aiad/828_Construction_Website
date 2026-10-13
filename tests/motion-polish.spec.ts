@@ -52,11 +52,21 @@ test("cursor returns to the native pointer on live motion and viewport changes",
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.emulateMedia({ reducedMotion: "no-preference" });
   await page.goto("/about");
-  await page.waitForTimeout(500);
+  // Hover waits for the header entrance to settle before reading coordinates.
+  // Fixed delays could move the mouse above the viewport on a slower browser.
+  const link = page.locator("header a[href='/contact']").first();
+  await link.hover();
+  const supportsCursor = await page.evaluate(() => matchMedia("(pointer: fine)").matches);
+  if (!supportsCursor) {
+    await page.mouse.move(700, 300);
+    await expect(page.locator("body")).not.toHaveClass(/has-custom-cursor/);
+    await expect(page.locator("[data-custom-cursor=ring]")).toBeHidden();
+    await expect(link).not.toHaveCSS("cursor", "none");
+    return;
+  }
   await page.mouse.move(700, 300);
   await expect(page.locator("body")).toHaveClass(/has-custom-cursor/);
   // Hover growth must not scale the ring's screen translation away from the dot.
-  const link = page.locator("header a[href='/contact']").first();
   const box = await link.boundingBox();
   expect(box).not.toBeNull();
   const position = { x: box!.x + box!.width / 2, y: box!.y + box!.height / 2 };

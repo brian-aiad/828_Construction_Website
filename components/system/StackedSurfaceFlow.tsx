@@ -76,6 +76,49 @@ export default function StackedSurfaceFlow({
 
   useLayoutEffect(() => {
     const wrap = wrapRef.current;
+    if (!wrap || !desktopMotion) return;
+    let frame = 0;
+    const revealFocus = (event: FocusEvent) => {
+      const target = event.target;
+      if (!(target instanceof HTMLElement) || !target.matches(":focus-visible")) return;
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(() => {
+        if (document.activeElement !== target) return;
+        const surface = target.closest<HTMLElement>("[data-stack-surface]");
+        if (!surface || surface.parentElement !== wrap) return;
+        const rect = target.getBoundingClientRect();
+        const x = rect.left + rect.width / 2;
+        const y = rect.top + rect.height / 2;
+        if (rect.top >= 64 && rect.bottom <= innerHeight - 16 &&
+            target.contains(document.elementFromPoint(x, y))) return;
+
+        // Native focus scrolling uses a sticky element's painted position,
+        // which can put its control underneath the next stacked surface.
+        // Recover the surface's document position from normal-flow siblings.
+        let start = wrap.getBoundingClientRect().top + scrollY;
+        for (const sibling of wrap.querySelectorAll<HTMLElement>(":scope > [data-stack-surface]")) {
+          if (sibling === surface) break;
+          start += sibling.offsetHeight;
+        }
+        const localTop = rect.top - surface.getBoundingClientRect().top;
+        const end = Math.max(start, start + surface.offsetHeight - innerHeight);
+        const top = Math.max(start, Math.min(end, start + localTop - innerHeight * 0.4));
+        const lenis = (window as unknown as {
+          __lenis828?: { scrollTo: (top: number, options: { immediate: boolean }) => void };
+        }).__lenis828;
+        if (lenis) lenis.scrollTo(top, { immediate: true });
+        else window.scrollTo({ top, behavior: "instant" });
+      });
+    };
+    wrap.addEventListener("focusin", revealFocus);
+    return () => {
+      cancelAnimationFrame(frame);
+      wrap.removeEventListener("focusin", revealFocus);
+    };
+  }, [desktopMotion]);
+
+  useLayoutEffect(() => {
+    const wrap = wrapRef.current;
     const line = lineRef.current;
     if (!wrap || !line) return;
 

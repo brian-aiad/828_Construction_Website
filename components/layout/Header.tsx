@@ -1,5 +1,7 @@
 "use client";
 
+import { useHydrated } from "@/utils/useHydrated";
+
 import React, { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
@@ -17,6 +19,7 @@ function sectionHasMedia(el: Element) {
 }
 
 export default function Header() {
+  const hydrated = useHydrated();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [mobileServicesOpen, setMobileServicesOpen] = useState(false);
   const [servicesOpen, setServicesOpen] = useState(false);
@@ -532,6 +535,7 @@ export default function Header() {
               </a>
               <button
                 ref={mobileMenuButtonRef}
+                disabled={!hydrated}
                 onClick={() => setMobileOpen(!mobileOpen)}
                 className="flex h-11 w-11 flex-col items-center justify-center gap-[5px]"
                 aria-label="Toggle menu"

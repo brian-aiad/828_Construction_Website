@@ -29,6 +29,20 @@ export default defineConfig({
       use: { ...devices["Desktop Firefox"] },
     },
     {
+      // Headless Linux Firefox can expose pointer:none. Reproduce that input
+      // profile locally so CSS/JS pinning mismatches cannot hide in CI only.
+      name: "firefox-no-pointer",
+      use: {
+        ...devices["Desktop Firefox"],
+        launchOptions: {
+          firefoxUserPrefs: {
+            "ui.primaryPointerCapabilities": 0,
+            "ui.allPointerCapabilities": 0,
+          },
+        },
+      },
+    },
+    {
       name: "webkit",
       use: { ...devices["Desktop Safari"] },
     },

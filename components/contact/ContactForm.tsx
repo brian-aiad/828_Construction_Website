@@ -1,5 +1,7 @@
 "use client";
 
+import { useHydrated } from "@/utils/useHydrated";
+
 import { useEffect, useRef, useState } from "react";
 import { SITE } from "@/lib/constants";
 import { useContactSubmission } from "@/components/contact/useContactSubmission";
@@ -54,6 +56,7 @@ function SuccessMark() {
 }
 
 export default function ContactForm() {
+  const hydrated = useHydrated();
   const [state, setState] = useState<FormState>("idle");
   const [errorMsg, setErrorMsg] = useState("");
   const [validationMsg, setValidationMsg] = useState("");
@@ -214,7 +217,7 @@ export default function ContactForm() {
       onInput={(event) => updateProgress(event.currentTarget)}
       onChange={(event) => updateProgress(event.currentTarget)}
       noValidate
-      className="space-y-6 sm:space-y-8"
+      className="@container space-y-6 sm:space-y-8"
       aria-label="Contact form"
     >
       <div aria-hidden="true" className="pointer-events-none absolute -left-[9999px] opacity-0">
@@ -258,7 +261,7 @@ export default function ContactForm() {
         <legend className={labelClass}>
           What do you need? <span className="text-[var(--color-accent)]">*</span>
         </legend>
-        <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+        <div className="grid auto-rows-fr grid-cols-1 gap-3 @min-[260px]:grid-cols-2">
           {projectChoices.map((choice) => {
             const id = `cf-service-${choice.value.toLowerCase().replace(/\s+/g, "-")}`;
             return (
@@ -274,10 +277,10 @@ export default function ContactForm() {
                 />
                 <label
                   htmlFor={id}
-                  className="pointer-events-none flex min-h-[5.25rem] flex-col justify-between border border-[#66615d] bg-[#151515] p-3 text-white transition-[border-color,background-color,color,box-shadow] duration-200 peer-hover:border-[#8c8782] peer-hover:bg-[#1b1b1b] peer-checked:border-[var(--color-accent)] peer-checked:bg-[var(--color-accent)] peer-checked:text-white peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-white"
+                  className="pointer-events-none flex h-full min-h-[5.5rem] min-w-0 flex-col justify-between border border-[#66615d] bg-[#151515] p-3 text-white transition-[border-color,background-color,color,box-shadow] duration-200 peer-hover:border-[#8c8782] peer-hover:bg-[#1b1b1b] peer-checked:border-[var(--color-accent)] peer-checked:bg-[var(--color-accent)] peer-checked:text-white peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-white"
                 >
-                  <span className="font-display text-[15px] leading-tight">{choice.title}</span>
-                  <span className="mt-2 text-[10px] leading-4 text-current opacity-60">
+                  <span className="font-display text-base leading-tight">{choice.title}</span>
+                  <span className="mt-2 text-xs leading-5 text-current opacity-75">
                     {choice.detail}
                   </span>
                 </label>
@@ -293,13 +296,13 @@ export default function ContactForm() {
       </fieldset>
 
       <div className="border-t border-white/14 pt-6 sm:pt-7">
-        <div className="mb-5 flex items-baseline justify-between gap-4">
+        <div className="mb-5 space-y-2">
           <h4 className="font-display text-xl font-normal text-white">How should Joe reach you?</h4>
-          <span className="hidden font-labels text-[8px] uppercase tracking-[0.16em] text-white/58 sm:block">
+          <span className="block font-labels text-[9px] uppercase tracking-[0.16em] text-white/58">
             No sales list. Ever.
           </span>
         </div>
-        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+        <div className="grid grid-cols-1 gap-5 @min-[400px]:grid-cols-2">
           <div>
             <label htmlFor="cf-name" className={labelClass}>
               Your name <span className="text-[var(--color-accent)]">*</span>
@@ -339,11 +342,10 @@ export default function ContactForm() {
           </div>
         </div>
         <div className="mt-5">
-          <div className="flex items-baseline justify-between gap-3">
+          <div>
             <label htmlFor="cf-email" className={labelClass}>
               Email <span className="normal-case tracking-normal text-white/58">— optional</span>
             </label>
-            <span className="mb-2.5 text-[10px] text-white/58">Add it for one-click email replies</span>
           </div>
           <input
             id="cf-email"
@@ -357,13 +359,13 @@ export default function ContactForm() {
             className={inputClass("email")}
             placeholder="you@example.com"
           />
-          <p id="cf-email-help" className="sr-only">If provided, the inbox notification is configured so Joe can reply directly to this address.</p>
+          <p id="cf-email-help" className="sr-only">Add your email if you prefer an email reply.</p>
           {fieldErrors.email && <p id="cf-email-err" className="mt-2 text-xs text-[#ffaaa2]">{fieldErrors.email}</p>}
         </div>
       </div>
 
       <div className="border-t border-white/14 pt-6 sm:pt-7">
-        <div className="mb-3 flex flex-wrap items-baseline justify-between gap-2">
+        <div className="mb-3 flex flex-col items-start gap-2">
           <label htmlFor="cf-message" className="font-display text-xl font-normal text-white">
             What are you planning or trying to fix?
           </label>
@@ -396,7 +398,7 @@ export default function ContactForm() {
       <div>
         <button
           type="submit"
-          disabled={state === "loading"}
+          disabled={!hydrated || state === "loading"}
           className="group flex min-h-14 w-full items-center justify-between bg-white px-5 text-black transition-colors duration-200 hover:bg-[var(--color-accent)] hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white disabled:cursor-not-allowed disabled:opacity-55"
         >
           <span className="flex items-center gap-3 font-labels text-[10px] uppercase tracking-[0.18em]">

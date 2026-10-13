@@ -12,6 +12,33 @@ const publicRoutes = [
 ];
 
 test.describe("release hardening", () => {
+  test("keyboard focus exposes stacked calls to action and FAQ controls", async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.addInitScript(() => sessionStorage.setItem("828:splash-seen", "1"));
+    for (const [route, selector] of [
+      ["/", '[data-section="vision"] a[href]'],
+      ["/services/remediation", '[data-section="rem-faq"] button[aria-controls]'],
+    ]) {
+      await page.goto(route, { waitUntil: "domcontentloaded" });
+      await expect(page.locator("[data-stack-mode]")).not.toHaveAttribute("data-stack-mode", "none");
+      await page.locator("header a[href='/about']").first().hover();
+      if (route === "/") {
+        await expect(page.locator("[data-docked-cta]")).toHaveJSProperty("inert", true);
+      }
+      await page.keyboard.press("Tab");
+      const controls = page.locator(selector);
+      expect(await controls.count()).toBeGreaterThan(0);
+      for (const control of await controls.all()) {
+        await control.focus();
+        await expect.poll(() => control.evaluate((el) => {
+          const rect = el.getBoundingClientRect();
+          return rect.top >= 52 && rect.bottom <= innerHeight &&
+            el.contains(document.elementFromPoint(rect.x + rect.width / 2, rect.y + rect.height / 2));
+        }), { message: "Focused controls must be visible above adjacent sections" }).toBe(true);
+      }
+    }
+  });
+
   test("skip link moves focus to the main landmark", async ({ page, browserName }) => {
     await page.goto("/about");
     const skipLink = page.getByRole("link", { name: "Skip to main content" });
@@ -90,6 +117,8 @@ test.describe("release hardening", () => {
     await expect(splash).toHaveCSS("pointer-events", "none");
     await expect(splash.getByRole("button", { includeHidden: true })).toHaveAttribute("tabindex", "-1");
     await expect(page.locator("main h1").first()).toBeVisible();
+    await page.goto("/services/remediation", { waitUntil: "domcontentloaded" });
+    await expect(page.locator('[data-section="rem-faq"] button[aria-controls]').first()).toBeDisabled();
     await context.close();
   });
 
@@ -141,7 +170,9 @@ test.describe("release hardening", () => {
       await expect(trigger).toHaveAttribute("aria-expanded", "false");
       await expect(panel).toHaveAttribute("aria-hidden", "true");
       await expect(panel).toHaveJSProperty("inert", true);
+      await expect(trigger).toBeEnabled();
       await trigger.focus();
+      await expect(trigger).toBeFocused();
       await page.keyboard.press("Enter");
       await expect(trigger).toHaveAttribute("aria-expanded", "true");
       await expect(panel).toHaveAttribute("aria-hidden", "false");
@@ -216,7 +247,10 @@ test.describe("release hardening", () => {
     await page.waitForTimeout(500);
 
     const heroImageLayer = page.locator(".hero-kenburns").locator("..");
-    await expect.poll(() => heroImageLayer.evaluate((element) => element.style.transform)).not.toBe("");
+    const finePointer = await page.evaluate(() => matchMedia("(pointer: fine)").matches);
+    const desktopTransform = () => heroImageLayer.evaluate((element) => element.style.transform);
+    if (finePointer) await expect.poll(desktopTransform).not.toBe("");
+    else await expect.poll(desktopTransform).toBe("");
 
     await page.setViewportSize({ width: 320, height: 568 });
     await expect.poll(() => heroImageLayer.evaluate((element) => element.style.transform)).toBe("");
@@ -238,7 +272,8 @@ test.describe("release hardening", () => {
     await expect.poll(() => heroImageLayer.evaluate((element) => element.style.transform)).toBe("");
 
     await page.emulateMedia({ reducedMotion: "no-preference" });
-    await expect.poll(() => heroImageLayer.evaluate((element) => element.style.transform)).not.toBe("");
+    if (finePointer) await expect.poll(desktopTransform).not.toBe("");
+    else await expect.poll(desktopTransform).toBe("");
     await context.close();
   });
 

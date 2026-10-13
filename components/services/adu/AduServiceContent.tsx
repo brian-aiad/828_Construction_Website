@@ -1,5 +1,7 @@
 "use client";
 
+import { useHydrated } from "@/utils/useHydrated";
+
 import {
   type SyntheticEvent,
   useEffect,
@@ -565,6 +567,7 @@ function FaqCard({
   className?: string;
 }) {
   const [open, setOpen] = useState(false);
+  const hydrated = useHydrated();
   const baseId = useId();
   const headingId = `${baseId}-heading`;
   const panelId = `${baseId}-panel`;
@@ -604,6 +607,7 @@ function FaqCard({
       <div className="mt-6">
         <button
           type="button"
+          disabled={!hydrated}
           onClick={() => setOpen((v) => !v)}
           aria-expanded={open}
           aria-controls={panelId}

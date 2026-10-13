@@ -2,7 +2,7 @@
  * AnimationController
  * Three-layer detection:
  *   1. Screen width < 1024 or height < 800 → compact layout (native scrolling)
- *   2. Coarse primary pointer → touch device (normal scroll)
+ *   2. No fine primary pointer → natural flow (touch or keyboard-only)
  *   3. prefers-reduced-motion → user preference
  *
  * NOTE: We still avoid raw navigator.maxTouchPoints / ontouchstart. Some
@@ -10,7 +10,7 @@
  * machines. Pointer media queries are a better signal for tablet ergonomics.
  */
 // Keep the compact-flow media query in app/globals.css in sync.
-export const DESKTOP_MOTION_QUERY = "(min-width: 1024px) and (min-height: 800px)";
+export const DESKTOP_MOTION_QUERY = "(min-width: 1024px) and (min-height: 800px) and (pointer: fine)";
 export const COARSE_TABLET_QUERY = "(pointer: coarse)";
 
 export class AnimationController {
