@@ -1,0 +1,75 @@
+828 CONSTRUCTION — PROJECT MEMORY / SESSION HANDOFF
+Saved: 2026-10-12 America/Los_Angeles
+Repository: /Users/brianaiad/Desktop/828_Construction_Website
+GitHub: https://github.com/brian-aiad/828_Construction_Website
+Production: https://828constructions.com
+
+STATUS
+Completed the durable responsive/browser-hardening goal and the contact form cleanup. All application changes were committed and pushed to main in ac44f48 (Polish contact form and harden responsive browser interactions). Vercel reported successful deployment. A subsequent user-requested push returned Everything up-to-date; working tree was clean. This handoff is tracked under updates/; the original local copy remains ignored. No domain configuration changes were made in this conversation.
+
+USER PREFERENCES AND AUTHORIZATION
+User wants thorough investigation, fixes, research, and testing across every screen size, especially phones and small/short laptop windows. User dislikes premature claims of perfection and wants evidence. Preserve the established visual identity. User explicitly authorized committing/pushing main to test live. User asked to keep a local development server available. User requested removal of the automatic GitHub Production checks workflow after failure emails; do not restore it without a new request. User reports disabling GitHub Actions notification emails. Manual browser tests remain available. Standing user AGENTS instructions request durable goals for substantial multi-stage work; the audit goal is now complete. Do not create a new goal for ordinary questions or small edits.
+
+COMMITS AND INITIAL ISSUE
+f26c542: previous responsive service scrolling and compact-viewport fixes.
+8ba2366: removed .github/workflows/production-checks.yml at user's request.
+ac44f48: final hardening and contact-form cleanup.
+Initial symptom: scrolling on a smaller display skipped/covered services instead of allowing all service content to be read. User subsequently asked for a sitewide reliability audit and provided a contact-form screenshot showing squeezed uneven service cards and cluttered alignment.
+
+IMPLEMENTED FIXES
+1. Aligned CSS and JavaScript desktop-motion conditions: min-width 1024px, min-height 800px, pointer:fine. Narrow/short, coarse-pointer, and pointer:none layouts use natural document flow. This fixes the Firefox no-pointer parent/child stacking mismatch. Reduced-motion handling remains in place. Compact native scrolling is intentional; do not restore pinning indiscriminately.
+2. CustomCursor keeps listeners attached across media-query changes and checks eligibility synchronously on pointer movement, avoiding effect/state timing gaps. Native cursor fallback remains available.
+3. StackedSurfaceFlow reveals keyboard-focused controls obscured by adjacent stacked sections, using the surface's normal document position. useJunctionSettle cancels pending snapping/gliding on Tab.
+4. Hidden DockedCTA is inert and aria-hidden, so invisible actions are excluded from keyboard navigation.
+5. New utils/useHydrated.ts gates JavaScript-dependent actions until handlers are ready: header mobile menu, portfolio case buttons, ADU/remediation FAQs, and main/service contact submit buttons. Native links and uncontrolled inputs remain usable.
+6. Contact form: equal-height service choices, two columns when the form container has enough room and one on very narrow screens; contact fields use container width too. Removed decorative 02-minute badge; simplified introduction; moved supporting text into clean stacked alignment. Preserved black/copper palette, editorial typography, accessible labels, selected/focus states, and 16px input text.
+7. Added Firefox no-pointer Playwright profile and regression coverage for visible keyboard focus, startup readiness, cursor behavior, and service-card text fitting at 320/390/768/1100/1440px.
+8. Stabilized the keyboard-focus test by waiting for DOM readiness and hydrated layout instead of waiting for every load-event resource. Actual focus/visibility assertions remain intact.
+
+VERIFICATION AND LIMITATIONS
+- Broad production desktop run: 323/324 passed across Chromium, Firefox, Firefox no-pointer, WebKit. Remaining failure was WebKit navigation load-event timeout; document was served. Corrected navigation readiness; final focused test passed on all six profiles.
+- Broad phone-emulation run: 158/158 passed before final contact-form style changes.
+- Final focused run after form changes: 42/42 passed across Chromium, Firefox, Firefox no-pointer, WebKit, Mobile Chrome, Mobile Safari. Includes form validation, simulated delivery, error recovery, five layout widths, and keyboard-focus regression.
+- Final accessibility audit: 16/16 scans, eight public routes at desktop and mobile sizes.
+- Breakpoint sweep: 80 cases across eight routes at 1023x800,1024x699,1024x700,1024x799,1024x800,1279x900,1280x899,1280x900,1920x1080,2560x1440. No document overflow; all service images reachable.
+- Contact security unit tests: 15 passed.
+- SEO audit: eight routes, metadata, sitemap, robots, internal links, icons/resources, redirects and 404 behavior passed.
+- Production build, type checks, lint, compiled-CSS audit passed; 323 public images decoded.
+- npm audit --omit=dev reported no known production dependency vulnerabilities at audit time.
+- Slow-load lab sample: 320px, 4x CPU slowdown, 150ms latency, 200KB/s. Initial LCP home1120ms/ADU1252ms/portfolio1084ms; observed CLS0. These are local samples, not field guarantees.
+- Phone results are browser emulation, not physical-device testing. Browser form tests mock delivery and do not verify actual inbox receipt. Automated accessibility scans are not a complete assistive-technology audit. Never claim universal perfection or combine overlapping test counts as unique cases.
+
+EVIDENCE
+output/website-audit.html — readable audit record with primary guidance links.
+output/playwright/contact-clean-390.png — final phone form screenshot.
+output/playwright/contact-clean-1100.png — final narrow desktop form screenshot.
+output/playwright/boundaries.json — breakpoint sweep.
+.claude-work/accessibility-audit/2026-10-13T00-33-53-585Z/report.json — final accessibility result.
+Temporary logs (may be cleared by OS): /tmp/828-contact-clean-tests.log, /tmp/828-contact-clean-build.log, /tmp/828-final-lint.log, /tmp/828-contact-clean-a11y.log, /tmp/828-verified-desktop.log, /tmp/828-verified-phone.log, /tmp/828-verified-seo.log, /tmp/828-contact-unit.log, /tmp/828-dependency-audit.json.
+
+LOCAL OPERATIONS
+Dev server was left running at http://localhost:3001 (PID84320 at last check; recheck before relying on it). Production test server used port3013. Dev uses .next-dev; production uses .next. Stop production consumers before rebuilding .next. Production contact challenge requires a temporary CONTACT_FORM_SECRET for local tests; generate an ephemeral value and never log it. Do not alter test sources during a multi-project run. Temporary CJS diagnostics live in /tmp/828-audit-scripts to avoid ESLint scanning them under output. Playwright CLI Firefox/WebKit had a browser-version mismatch; existing Playwright suite/direct browser diagnostics were used. GitHub Actions workflow remains deleted.
+
+HOSTING CONVERSATION / CORRECTIONS
+User asked whether Vercel is required for all projects. Explained it is hosting, not mandatory; local tools need no hosting and public apps can use alternatives. Cloudflare provides DNS, proxy/security/CDN, and hosting through Workers/Pages.
+After researching current rules, corrected earlier overly broad endorsement of Vercel free: Hobby is restricted to personal noncommercial use; a construction business site requires a commercial plan under Vercel's policy. Pro was listed from $20/month plus applicable usage at research time. Cloudflare free tier is an alternative to evaluate, not a guaranteed drop-in migration; Next.js, forms, and image handling need compatibility testing. User's actual Vercel subscription was NOT verified. Recheck prices and policies before future advice.
+User pasted dashboard showing six deployed projects: 828construction (828constructions.com), Loavenly (www.loavenly.com), OIS (originalinsurance.net), RIA (ria-website-psi.vercel.app), CAMBRIO (cambrio.vercel.app), Quotzal (quotzal.com). aiadapply-web explicitly said No Production Deployment. Displayed usage was below listed limits. Only 828 was audited here; do not claim the others are functionally tested.
+RIA domain page: raflainsurance.com Valid Configuration ->308 www.raflainsurance.com; www.raflainsurance.com Valid Configuration Production; ria-website-psi.vercel.app additional Production alias. Correct spelling includes n in insurance. User asked about deleting the Vercel alias; explained it removes only that address, not the project, but links/integrations using it stop working. No deletion was performed or confirmed by us.
+828 domain page: 828constructions.com Production with Proxy Detected; 828-construction-website.vercel.app Valid Configuration Production. Explained proxy warning means intermediary traffic, possibly Cloudflare, not proof of broken hosting. Provider and origin target remain unverified. Advised checking View DNS configuration before removing the Vercel alias because the proxy may rely on it. User has not supplied that DNS detail. Do not assume Cloudflare is definitely configured or remove any domains without inspecting dependencies.
+
+PRIMARY SOURCES ALREADY CONSULTED
+https://www.w3.org/WAI/WCAG21/Understanding/reflow
+https://www.w3.org/WAI/WCAG22/Understanding/focus-not-obscured-minimum
+https://www.w3.org/WAI/WCAG22/Understanding/target-size-minimum
+https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/At-rules/%40media/pointer
+https://web.dev/articles/optimize-cls?hl=en
+https://playwright.dev/docs/actionability
+https://playwright.dev/docs/next/navigations
+https://vercel.com/docs/limits/fair-use-guidelines
+https://vercel.com/pricing
+https://developers.cloudflare.com/workers/framework-guides/web-apps/nextjs/
+https://www.cloudflare.com/plans/developer-platform/
+https://examples.vercel.com/kb/guide/how-to-setup-verified-proxy
+
+MEMORY SCOPE
+This is a persistent repository handoff, not a claim of account-wide ChatGPT memory. Read this file when resuming this project. No passwords, API keys, private environment values, or credentials are recorded here.
