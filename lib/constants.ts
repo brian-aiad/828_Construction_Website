@@ -128,7 +128,7 @@ export const ACCENTS = {
 export const ACCENT_PRIMARY = ACCENTS.maroon.DEFAULT;
 
 // ── Project types ─────────────────────────────────────────────────────────
-export type ProjectCategory = "Bath Remodel" | "ADU Construction" | "Remediation" | "Consulting";
+export type ProjectCategory = "Bath Remodel" | "ADU Construction" | "Remediation" | "Consulting" | "Residential Project";
 
 export interface Project {
   id: number;
@@ -222,6 +222,25 @@ export const PROJECTS: Project[] = [
     images: [PROJECT_MAIN_IMAGES.redondoBeachResidence, ...PROJECT_GALLERIES.redondoBeachResidence.slice(1)],
     portfolioRank: 4,
     tempPhoto: true,
+  },
+  {
+    id: 5,
+    title: "Torrance Residence",
+    category: "Residential Project",
+    location: "Torrance, CA",
+    spec: "Exterior photographs",
+    description:
+      "Exterior views and carpentry details from a photographed residence in Torrance, California.",
+    image: "/images/projects/torrance-residence/01-3143.webp",
+    images: [
+      "/images/projects/torrance-residence/01-3143.webp",
+      "/images/projects/torrance-residence/02-2944.webp",
+      "/images/projects/torrance-residence/03-2946.webp",
+      "/images/projects/torrance-residence/04-2969.webp",
+    ],
+    featured: true,
+    heroReady: true,
+    portfolioRank: 4,
   },
 ];
 

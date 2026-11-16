@@ -157,4 +157,16 @@ export const RESIDENCE_GALLERIES: ResidenceGallery[] = [
       "/images/projects/tustin-residence/44-2038.jpg",
     ],
   },
+  {
+    id: "torrance-residence",
+    title: "Torrance Residence",
+    location: "Torrance, CA",
+    scope: "Exterior residence",
+    photos: [
+      "/images/projects/torrance-residence/01-3143.webp",
+      "/images/projects/torrance-residence/02-2944.webp",
+      "/images/projects/torrance-residence/03-2946.webp",
+      "/images/projects/torrance-residence/04-2969.webp",
+    ],
+  },
 ];

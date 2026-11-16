@@ -27,7 +27,7 @@ const ProjectInspectionViewer = dynamic(
 
 // Each photographed project has its own art-directed case study. The shared
 // field-documentation language keeps the page cohesive without reducing the
-// three projects to one repeated template.
+// four projects to one repeated template.
 
 type LightboxState = { c: number; p: number } | null;
 
@@ -275,14 +275,14 @@ function CaseLedger({
           event.currentTarget.focus({ preventScroll: true });
           onOpenSet();
         }}
-        aria-label={`Open the full set — ${gallery.title}`}
+        aria-label={`Open the gallery — ${gallery.title}`}
         className={`mt-8 inline-flex min-h-[44px] items-center gap-3 border px-6 py-3.5 font-labels text-[9px] uppercase tracking-[0.18em] transition-colors ${
           dark
             ? "border-white/25 text-white/80 hover:border-white hover:text-white"
             : "border-black/25 text-black/75 hover:border-black hover:text-black"
         }`}
       >
-        Open the full set
+        Open the gallery
         <span className={`font-numbers text-[10px] ${dark ? "text-white/85" : "text-[var(--color-accent)]"}`}>
           {gallery.photos.length}
         </span>
@@ -438,7 +438,7 @@ export default function PortfolioContent() {
   }, [close]);
 
   const active = lightbox ? PORTFOLIO_CASES[lightbox.c] : null;
-  const [cerritos, elSereno, tustin] = PORTFOLIO_CASES;
+  const [cerritos, elSereno, tustin, torrance] = PORTFOLIO_CASES;
 
   return (
     <div ref={rootRef} className="bg-[#f5f0e9] text-black">
@@ -462,8 +462,8 @@ export default function PortfolioContent() {
                     Remodels, ADUs, Repairs.
                   </h1>
                   <p className="mt-6 max-w-md text-sm leading-7 text-white/56">
-                    Three projects, photographed the way they were built — completely.
-                    Open any project for the full set.
+                    Four photographed projects across the South Bay and Southern California.
+                    Open a project to view its photographs.
                   </p>
                   <a
                     href={`#${cerritos.gallery.id}`}
@@ -525,7 +525,7 @@ export default function PortfolioContent() {
                   if (!event.currentTarget.contains(event.relatedTarget)) setHeroPreview(null);
                 }}
               >
-                {[cerritos, elSereno, tustin].map((c, i) => (
+                {PORTFOLIO_CASES.map((c, i) => (
                   <a
                     key={c.gallery.id}
                     href={`#${c.gallery.id}`}
@@ -774,6 +774,66 @@ export default function PortfolioContent() {
             </div>
 
             <ContactStrip photos={tustin.strip} title={tustin.gallery.title} dark={false} />
+          </div>
+        </section>
+
+        {/* Torrance: exterior residence views and documented carpentry detail. */}
+        <section
+          id={torrance.gallery.id}
+          data-section="case-torrance"
+          data-header-light=""
+          className="relative flex min-h-svh scroll-mt-[49px] flex-col justify-center bg-[#f5f0e9] px-6 pb-20 pt-24 lg:px-12 lg:pb-28 lg:pt-28"
+          style={{ overflowX: "clip" }}
+        >
+          <div className="relative z-10 mx-auto w-full max-w-[100rem]">
+            <div className="grid gap-10 lg:grid-cols-[1.06fr_0.94fr] lg:items-start lg:gap-14 2xl:gap-20">
+              <div
+                data-lead-parallax=""
+                data-motion-reveal="left"
+                className="relative aspect-[4/5] overflow-hidden bg-[#e8e3da] sm:aspect-[5/4] lg:aspect-auto lg:min-h-[min(68svh,48rem)]"
+              >
+                <Image
+                  src={torrance.lead}
+                  alt="Torrance Residence — exterior view"
+                  fill
+                  quality={86}
+                  sizes="(max-width: 1024px) 100vw, 54vw"
+                  placeholder="blur"
+                  blurDataURL={lqip(torrance.lead)}
+                  className="object-cover"
+                />
+              </div>
+              <div className="lg:self-stretch">
+                <div className="lg:sticky lg:top-28" data-motion-reveal="right">
+                  <CaseNumberBlock index={3} title={torrance.gallery.title} dark={false} />
+                  <div className="mt-8">
+                    <CaseLedger caseData={torrance} dark={false} onOpenSet={() => openAt(3)} />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div
+              data-tile-group=""
+              data-motion-reveal="up"
+              data-motion-stagger="0.065"
+              className="mt-10 grid grid-cols-2 gap-3 md:grid-cols-3 lg:mt-14 lg:gap-4"
+            >
+              {torrance.grid.map((src, index) => (
+                <CaseTile
+                  key={src}
+                  src={src}
+                  caseData={torrance}
+                  index={index}
+                  dark={false}
+                  aspect={index === 0 ? "col-span-2 aspect-[8/5] md:col-span-1" : "aspect-[4/5]"}
+                  sizes={index === 0 ? "(max-width: 768px) 100vw, 33vw" : "(max-width: 768px) 50vw, 33vw"}
+                  onOpen={(src) => openAt(3, src)}
+                />
+              ))}
+            </div>
+
+            <ContactStrip photos={torrance.strip} title={torrance.gallery.title} dark={false} />
           </div>
         </section>
 

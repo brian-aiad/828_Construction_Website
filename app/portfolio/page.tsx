@@ -6,7 +6,7 @@ import { breadcrumbJsonLd, SEARCH_ROBOTS, socialMetadata } from "@/lib/seo";
 
 const title = "Portfolio | Our Work in Torrance & South Bay";
 const description =
-  "828 Construction's portfolio — ADU builds, structural remediation, and consulting projects across Torrance and South Bay, CA. Building science over guesswork.";
+  "828 Construction's portfolio of photographed residences and construction work in Torrance and Southern California.";
 
 export const metadata: Metadata = {
   title,
@@ -17,8 +17,8 @@ export const metadata: Metadata = {
     title,
     description,
     path: "/portfolio",
-    image: "/images/projects/cerritos-residence/01-2176.jpg",
-    imageAlt: "Cerritos bathroom remodel by 828 Construction",
+    image: "/images/projects/torrance-residence/01-3143.webp",
+    imageAlt: "Torrance Residence exterior by 828 Construction",
   }),
 };
 

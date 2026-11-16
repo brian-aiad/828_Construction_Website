@@ -526,5 +526,21 @@
   "/images/projects/tustin-residence/home-preview-v2.jpg": {
     "width": 1200,
     "height": 1500
+  },
+  "/images/projects/torrance-residence/01-3143.webp": {
+    "width": 2560,
+    "height": 1707
+  },
+  "/images/projects/torrance-residence/02-2944.webp": {
+    "width": 2200,
+    "height": 1467
+  },
+  "/images/projects/torrance-residence/03-2946.webp": {
+    "width": 2200,
+    "height": 1466
+  },
+  "/images/projects/torrance-residence/04-2969.webp": {
+    "width": 1467,
+    "height": 2200
   }
 }

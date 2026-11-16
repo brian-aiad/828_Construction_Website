@@ -12,6 +12,7 @@ const galleries = [
   "cerritos-residence",
   "el-sereno-residence",
   "tustin-residence",
+  "torrance-residence",
 ];
 
 const entries = [];
