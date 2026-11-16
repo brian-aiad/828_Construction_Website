@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Script from "next/script";
-import { Inter, Space_Mono, IBM_Plex_Mono } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
@@ -17,23 +17,26 @@ import SectionRevealController from "@/components/system/SectionRevealController
 import MotionPreferences from "@/components/providers/MotionPreferences";
 import RouteTransitionCurtain from "@/components/system/RouteTransitionCurtain";
 
-const inter = Inter({
+const inter = localFont({
+  src: "./fonts/inter-latin-variable.woff2",
   variable: "--font-inter",
-  subsets: ["latin"],
   display: "swap",
+  weight: "100 900",
 });
 
-const spaceMono = Space_Mono({
+const spaceMono = localFont({
+  src: "./fonts/space-mono-latin-400.woff2",
   variable: "--font-space-mono",
-  subsets: ["latin"],
-  weight: ["400"],
+  weight: "400",
   display: "swap",
 });
 
-const ibmPlexMono = IBM_Plex_Mono({
+const ibmPlexMono = localFont({
+  src: [
+    { path: "./fonts/ibm-plex-mono-latin-400.woff2", weight: "400" },
+    { path: "./fonts/ibm-plex-mono-latin-700.woff2", weight: "700" },
+  ],
   variable: "--font-ibm-plex-mono",
-  subsets: ["latin"],
-  weight: ["400", "700"],
   display: "swap",
 });
 
