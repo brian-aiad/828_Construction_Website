@@ -17,7 +17,7 @@ export const metadata: Metadata = {
     title,
     description,
     path: "/portfolio",
-    image: "/images/projects/torrance-residence/01-3143.webp",
+    image: "/images/projects/torrance-residence/01-IMG_3143.webp",
     imageAlt: "Torrance Residence exterior by 828 Construction",
   }),
 };

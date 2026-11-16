@@ -54,8 +54,8 @@ const SELECTS: Record<
   "torrance-residence": {
     projectId: 5,
     lead: 0,
-    grid: [1, 3],
-    strip: [1, 2, 3],
+    grid: [1, 5, 7, 12],
+    strip: [2, 4, 15],
   },
 };
 
@@ -63,7 +63,7 @@ const HERO_IMAGES: Record<string, string> = {
   "cerritos-residence": "/images/projects/cerritos-residence/03-2077.jpg",
   "el-sereno-residence": "/images/projects/el-sereno-residence/home-preview-v2.jpg",
   "tustin-residence": "/images/projects/tustin-residence/17-2010.jpg",
-  "torrance-residence": "/images/projects/torrance-residence/01-3143.webp",
+  "torrance-residence": "/images/projects/torrance-residence/01-IMG_3143.webp",
 };
 
 export const PORTFOLIO_CASES: PortfolioCase[] = RESIDENCE_GALLERIES.map((gallery) => {

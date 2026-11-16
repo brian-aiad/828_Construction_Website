@@ -777,7 +777,7 @@ export default function PortfolioContent() {
           </div>
         </section>
 
-        {/* Torrance: exterior residence views and documented carpentry detail. */}
+        {/* Torrance: exterior, interior, bath, and kitchen residence views. */}
         <section
           id={torrance.gallery.id}
           data-section="case-torrance"
