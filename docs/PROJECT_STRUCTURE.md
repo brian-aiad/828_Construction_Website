@@ -28,7 +28,7 @@ At session start, open this folder, inspect `git status`, and fetch `origin`. Fa
 | `docs/`, `design/` | Handoffs, technical documentation, client direction, and design references. |
 | `scripts/`, `tests/` | Development tools, build audits, and regression tests. |
 
-Original Torrance media is indexed in the shared brain at `Projects/828-construction/Assets/Originals/Torrance-Residence/MANIFEST.json`. The existing source folder is preserved locally; website-ready versions remain in `public/images/projects/torrance-residence/`. Other original residence folders and research material must be reviewed for provenance before any reorganization.
+All 54 original Torrance files are preserved in the shared brain at `Projects/828-construction/Assets/Originals/Torrance-Residence/`, with original filenames and source provenance in `MANIFEST.json`. Every original was read and SHA-256 verified on Windows and Mac before the duplicate project-root folder was retired; `RETIREMENT.json` records that verification and completed removal. Website-ready versions remain in `public/images/projects/torrance-residence/`. Other original residence folders and research material must be reviewed for provenance before any reorganization.
 
 ## Commands
 
