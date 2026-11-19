@@ -1,5 +1,9 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
+## Project organization
+
+See [project structure and shared workspace](docs/PROJECT_STRUCTURE.md) for the canonical folder, asset locations, and shared context.
+
 ## Getting Started
 
 First, run the development server:
