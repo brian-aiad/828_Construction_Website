@@ -6,7 +6,7 @@ The 828 Construction website, including its public pages, real project photograp
 
 ## Canonical workspace
 
-Use the existing checkout in the actual `Desktop/Projects/828_website` directory on each computer. `Projects` and its project directories are real folders, not shortcuts to another active project tree. Keep repositories local and shared context in OneDrive. The same repository and `main` commit provide the shared source history.
+Use the existing checkout in the actual `Code/Projects/828_website` directory on each computer. `Projects` and its project directories are real folders, not shortcuts to another active project tree. Keep repositories local and shared context in OneDrive. The same repository and `main` commit provide the shared source history.
 
 At session start, open this folder, inspect `git status`, and fetch `origin`. Fast-forward only when local work can be preserved safely. Reconcile existing edits before changing branches. Do not clone another dated project folder for each task. A temporary worktree is an exceptional tool for an actual concurrent task; record and retire it after its unique work is preserved.
 
@@ -35,4 +35,4 @@ Keep repository documentation useful on GitHub. Keep credentials, private config
 
 ## History/recovery
 
-Git retains committed history. Prior project folders belong in `Desktop/Projects/OLD_Projects`, separate from the active checkout. Organization receipts and preserved snapshots may also remain in the recorded local `Code/Organization_Backups` and `Code/Archive` recovery locations during migration. Preserve unique uncommitted files and original client assets before retiring an old checkout. Summaries are an index to the evidence, not a replacement for unique source files.
+Git retains committed history. Prior project folders belong in `Code/Projects/OLD_Projects`, separate from the active checkout. Organization receipts and preserved snapshots may also remain in the recorded local `Code/Organization_Backups` and `Code/Archive` recovery locations during migration. Preserve unique uncommitted files and original client assets before retiring an old checkout. Summaries are an index to the evidence, not a replacement for unique source files.
