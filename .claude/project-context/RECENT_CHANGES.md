@@ -1,5 +1,10 @@
 # 828 Construction — Recent Changes
 
+## 2026-10-19 — Cross-device startup verification
+
+- MacBook and Windows desktop source files match; root, services, and contact start successfully. Browser checks passed on eight routes at desktop/mobile widths; 15 contact security tests passed.
+- Development commands and watchdog now use Webpack on port 3001, matching the verified server. PDF files are marked binary to preserve exact bytes on Windows. Changes remain unpublished.
+
 _Append entries here newest-first. Date all entries._
 
 ## 2026-08-25 — Contact form false-positive hard block removed

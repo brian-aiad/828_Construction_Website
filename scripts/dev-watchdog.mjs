@@ -51,7 +51,7 @@ function startServer(wipeCache) {
   // spawn node directly on next's bin — .cmd shims hit EINVAL on Node 22+ (Windows)
   child = spawn(
     process.execPath,
-    [path.join(ROOT, "node_modules", "next", "dist", "bin", "next"), "dev", "-p", "3001"],
+    [path.join(ROOT, "node_modules", "next", "dist", "bin", "next"), "dev", "--webpack", "-p", "3001"],
     { cwd: ROOT, stdio: ["ignore", out, err], detached: false, shell: false }
   );
   log(`started next dev (pid ${child.pid})`);
