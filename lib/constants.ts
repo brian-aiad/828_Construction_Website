@@ -128,7 +128,7 @@ export const ACCENTS = {
 export const ACCENT_PRIMARY = ACCENTS.maroon.DEFAULT;
 
 // ── Project types ─────────────────────────────────────────────────────────
-export type ProjectCategory = "Bath Remodel" | "ADU Construction" | "Remediation" | "Consulting";
+export type ProjectCategory = "Bath Remodel" | "ADU Construction" | "Remediation" | "Consulting" | "Residential Project";
 
 export interface Project {
   id: number;
@@ -222,6 +222,37 @@ export const PROJECTS: Project[] = [
     images: [PROJECT_MAIN_IMAGES.redondoBeachResidence, ...PROJECT_GALLERIES.redondoBeachResidence.slice(1)],
     portfolioRank: 4,
     tempPhoto: true,
+  },
+  {
+    id: 5,
+    title: "Torrance Residence",
+    category: "Residential Project",
+    location: "Torrance, CA",
+    spec: "Residence photographs",
+    description:
+      "Exterior, interior, bathroom, and kitchen photographs from a residence in Torrance, California.",
+    image: "/images/projects/torrance-residence/01-IMG_3143.webp",
+    images: [
+      "/images/projects/torrance-residence/01-IMG_3143.webp",
+      "/images/projects/torrance-residence/02-IMG_2944.webp",
+      "/images/projects/torrance-residence/03-IMG_2952.webp",
+      "/images/projects/torrance-residence/04-IMG_2955.webp",
+      "/images/projects/torrance-residence/05-IMG_2966.webp",
+      "/images/projects/torrance-residence/06-IMG_3064.webp",
+      "/images/projects/torrance-residence/07-IMG_2973.webp",
+      "/images/projects/torrance-residence/08-IMG_3118.webp",
+      "/images/projects/torrance-residence/09-IMG_3021.webp",
+      "/images/projects/torrance-residence/10-IMG_3133.webp",
+      "/images/projects/torrance-residence/11-IMG_3015.webp",
+      "/images/projects/torrance-residence/12-IMG_2996.webp",
+      "/images/projects/torrance-residence/13-IMG_3072.webp",
+      "/images/projects/torrance-residence/14-IMG_3050.webp",
+      "/images/projects/torrance-residence/15-IMG_3074.webp",
+      "/images/projects/torrance-residence/16-IMG_3049.webp",
+    ],
+    featured: true,
+    heroReady: true,
+    portfolioRank: 4,
   },
 ];
 

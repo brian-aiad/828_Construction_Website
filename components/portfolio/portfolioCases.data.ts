@@ -5,7 +5,7 @@ import { PROJECTS, Project } from "@/lib/constants";
 // 2026-07-13 revamp). Indices point into each residence's full photo set and
 // were chosen from indexed contact sheets
 // (.claude-work/research/portfolio-revamp/sheet-*.png) to avoid the
-// near-duplicate walls the old uncurated grids produced. The full set stays
+// near-duplicate walls the old uncurated grids produced. Gallery photos stay
 // reachable through the per-case lightbox.
 
 export type PortfolioCase = {
@@ -51,12 +51,19 @@ const SELECTS: Record<
     grid: [3, 2, 12, 13, 15, 33],
     strip: [5, 6, 39],
   },
+  "torrance-residence": {
+    projectId: 5,
+    lead: 0,
+    grid: [1, 5, 7, 12],
+    strip: [2, 4, 15],
+  },
 };
 
 const HERO_IMAGES: Record<string, string> = {
   "cerritos-residence": "/images/projects/cerritos-residence/03-2077.jpg",
   "el-sereno-residence": "/images/projects/el-sereno-residence/home-preview-v2.jpg",
   "tustin-residence": "/images/projects/tustin-residence/17-2010.jpg",
+  "torrance-residence": "/images/projects/torrance-residence/01-IMG_3143.webp",
 };
 
 export const PORTFOLIO_CASES: PortfolioCase[] = RESIDENCE_GALLERIES.map((gallery) => {
