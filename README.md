@@ -2,6 +2,8 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 ## Project organization
 
+[AI workflow and shared context](AGENTS.md)
+
 See [project structure and shared workspace](docs/PROJECT_STRUCTURE.md) for the canonical folder, asset locations, and shared context.
 
 ## Getting Started

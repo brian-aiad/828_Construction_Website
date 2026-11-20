@@ -1,5 +1,7 @@
 # 828 Construction — Project Rules
 
+Start with [AGENTS.md](AGENTS.md) for the OneDrive AI_Brain workflow and this project's current shared context. Keep the project rules below; record current status in the shared brain.
+
 This file is read by Claude Code automatically at the start of every session in
 this project. It contains non-negotiable rules. If anything here conflicts with
 skill instructions, this file wins.
@@ -103,7 +105,7 @@ A page is not done until ALL of these are true:
 3. **`npm run preflight:full` exits 0** — this runs `next build` + tests ALL 9 routes. Not just the changed page.
 4. Production build (via `npx next start -p 4000`) Lighthouse: Performance ≥85, Accessibility ≥95
 5. The page has been scrolled end-to-end at both viewports with no dead zones, overflow, or stacked content
-6. Memory or page status in this file has been updated
+6. The shared `Projects/828-construction/CONTEXT.md` has been updated with the verified result, commit, checks, and remaining work
 7. Phase 4.5 visual audit: every major section has a PASS file with all 5 questions answered affirmatively, AND the functional-qa duplicateHeadings array is empty.
 8. **/design-critique and /accessibility-review run as subagents** — block deploy if A11y score drops below 95
 
@@ -128,7 +130,9 @@ Minimum elapsed for a full page redesign: 45 minutes. Minimum for a bug-fix pass
 - Running Lighthouse against the dev server instead of production. Invalid result.
 - Building a page without reading `design/828_DESIGN_SYSTEM.md` first — leads to palette drift and pattern inconsistency.
 
-## Page status (update after each completed page)
+## Historical page snapshots
+
+These dated entries preserve earlier implementation history. Read and update the shared project context for current status.
 
 | Page | Status | Date |
 |------|--------|------|
@@ -152,14 +156,15 @@ Minimum elapsed for a full page redesign: 45 minutes. Minimum for a bug-fix pass
 - **Client:** Joe P, 828 Construction, Torrance CA (CA License #1141119, est. 2004)
 - **Logo:** `828logo.png` + `828logo_trans.png` exist in project root — wire non-transparent version in Header
 
-## Living Docs (read at session start)
+## Current shared context
 
-`.claude/project-context/` — update after every session:
-- `CURRENT_STATUS.md` — page Lighthouse scores, what's done vs pending
-- `RECENT_CHANGES.md` — append newest-first after any change
-- `OUTSTANDING_ITEMS.md` — todos and known bugs
+Follow [AGENTS.md](AGENTS.md) and the shared `WORKFLOW.md`. Read and update `AI_Brain/Projects/828-construction/CONTEXT.md` for current status, checks, decisions, and next steps.
 
-## Known pending client items
+The tracked files in `.claude/project-context/` are historical source notes. Preserve them and consult them only for a specific earlier decision; do not maintain a second current-status stream there.
+
+## Historical client checklist
+
+This older checklist is retained as history. Confirm present-day client/setup needs in the shared project context and live configuration before acting on an item.
 
 - Real project photography (currently using placeholder/AI-generated)
 - Resend API key for contact form

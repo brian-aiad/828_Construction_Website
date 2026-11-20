@@ -36,6 +36,8 @@ Use Node 22 and the package scripts: `npm run dev` (port 3001), `npm run lint`, 
 
 ## Shared context
 
+Start with [AI workflow and shared context](../AGENTS.md), including the shared `WORKFLOW.md` and the project context below.
+
 Read `AI_Brain/START_HERE.md`, then `AI_Brain/Projects/828-construction/CONTEXT.md`. The shared brain is in OneDrive `Downloads/AI_Brain` (on macOS, under `~/Library/CloudStorage/OneDrive-Personal`). Keep current decisions, commit, validation results, remaining work, and source-asset references there. If sync is unavailable, report that limitation and reconcile the shared note when access returns.
 
 Keep repository documentation useful on GitHub. Keep credentials, private configuration, dependency folders, build output, and local databases out of the shared brain and commits.

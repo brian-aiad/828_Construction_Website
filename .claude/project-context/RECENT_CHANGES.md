@@ -1,3 +1,7 @@
+<!-- AI_BRAIN_HISTORY:BEGIN -->
+This is preserved historical context. Current status, checks, decisions, and next steps are maintained in OneDrive `AI_Brain/Projects/828-construction/CONTEXT.md`. Start with the repository `AGENTS.md` and shared `WORKFLOW.md`; do not append new session status to this historical file.
+<!-- AI_BRAIN_HISTORY:END -->
+
 # 828 Construction — Recent Changes
 
 ## 2026-10-19 — Cross-device startup verification
