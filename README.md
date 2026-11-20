@@ -56,7 +56,7 @@ npx playwright install chromium firefox webkit
 npm run test:release
 ```
 
-`test:release` starts the production build on port 3011 with a fresh test-only contact signing key. It covers all eight routes at phone, tablet, and desktop widths in Chromium, Firefox, and WebKit, plus navigation, forms, galleries, reduced motion, and cursor behavior. Email delivery is mocked in browser submission tests; these checks do not send customer leads. CI runs this same suite and uploads failure screenshots/traces.
+`test:release` starts the production build on port 3011 with a fresh test-only contact signing key. It covers all eight routes at phone, tablet, and desktop widths in Chromium, Firefox, and WebKit, plus navigation, forms, galleries, reduced motion, and cursor behavior. Email delivery is mocked in browser submission tests; these checks do not send customer leads. These commands run local regression checks. Production pushes require `npm run preflight:full`, which builds production, audits images, and checks all route/viewports plus navigation and refresh behavior. The installed local `pre-push` hook enforces that gate on configured checkouts. This repository currently has no tracked GitHub Actions workflow.
 
 To run existing tests against a separately started local server, set `TEST_BASE_URL` to that server's URL. Port 3000 belongs to another application and must not be used for this project.
 
